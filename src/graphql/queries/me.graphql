@@ -1,0 +1,10 @@
+query me {
+  me {
+    templates {
+        ...templateFields
+    }
+    sites {
+        ...siteFields
+    }
+  }
+}

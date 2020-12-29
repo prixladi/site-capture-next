@@ -1,0 +1,7 @@
+mutation updateTemplate($id: ID!, $update: UpdateSiteInput!) {
+  template {
+    update(id: $id, update: $update) {
+      ...mutationResultFields
+    }
+  }
+}

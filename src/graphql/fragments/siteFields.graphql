@@ -1,0 +1,9 @@
+fragment siteFields on Site {
+  id
+  quality
+  url
+  subsites
+  viewports {
+  ...viewportFields
+  }
+}
