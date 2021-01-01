@@ -1,7 +1,9 @@
 import React, { Ref, useEffect } from 'react';
-import { Input, FormControl, FormLabel, Flex, Grid, IconButton } from '@chakra-ui/react';
-import { Control, RegisterOptions, useFieldArray } from 'react-hook-form';
+import { FormControl, FormLabel, Flex, Grid, IconButton } from '@chakra-ui/react';
+import { Control, FieldErrors, RegisterOptions, useFieldArray } from 'react-hook-form';
 import { FaPlus, FaMinus } from 'react-icons/fa';
+import InputBase from './InputBase';
+import { requiredMessage } from '../utils/validationUtils';
 
 export type Viewport = {
   width: number;
@@ -14,23 +16,48 @@ type InputProps = {
   remove: (index: number) => void;
   index: number;
   totalLen: number;
+  error: FieldErrors<Viewport> | undefined;
 };
 
 type Props = {
   register: (rules?: RegisterOptions) => Ref<HTMLInputElement>;
   control: Control;
+  errors?: (FieldErrors<Viewport> | undefined)[];
 };
 
-const dimensionRules: RegisterOptions = { min: 300, max: 10000, required: true, setValueAs: parseInt };
+const errorMessage = 'Field value must be number between 300 and 10000';
 
-const ViewportInput: React.FC<InputProps> = ({ register, viewport, remove, index, totalLen }: InputProps) => {
-  const widthId = `viewports[${index}].width`;
-  const heigthId = `viewports[${index}].height`;
+const dimensionRules: RegisterOptions = {
+  min: { value: 300, message: errorMessage },
+  max: { value: 10000, message: errorMessage },
+  required: { value: true, message: requiredMessage },
+  setValueAs: (val) => parseInt(val) || undefined,
+};
+
+const ViewportInput: React.FC<InputProps> = ({ register, remove, index, viewport, totalLen, error }: InputProps) => {
+  const widthName = `viewports[${index}].width`;
+  const heigthName = `viewports[${index}].height`;
 
   return (
-    <Flex key={`viewports[${index}]`} gridGap="1em" width="100%">
-      <Input placeholder="Width" id={widthId} type="number" name={widthId} ref={register(dimensionRules)} />
-      <Input placeholder="Height" id={heigthId} type="number" name={heigthId} ref={register(dimensionRules)} />
+    <Flex gridGap="1em" width="100%">
+      <InputBase
+        defaultValue={viewport?.width}
+        isRequired
+        placeholder="Width"
+        errorMessage={error?.width?.message}
+        type="number"
+        name={widthName}
+        register={register(dimensionRules)}
+      />
+      <InputBase
+        defaultValue={viewport?.height}
+        isRequired
+        placeholder="Height"
+        errorMessage={error?.height?.message}
+        type="number"
+        name={heigthName}
+        register={register(dimensionRules)}
+      />
       {totalLen > 1 && (
         <IconButton
           onClick={() => remove(index)}
@@ -46,22 +73,32 @@ const ViewportInput: React.FC<InputProps> = ({ register, viewport, remove, index
   );
 };
 
-const ViewPortInputs: React.FC<Props> = ({ register, control }: Props) => {
+const ViewPortInputs: React.FC<Props> = ({ register, control, errors }: Props) => {
   const { fields, append, remove } = useFieldArray<Viewport>({
     control,
     name: 'viewports',
   });
 
   useEffect(() => {
-    append({});
-  }, []);
+    if (fields.length === 0) {
+      append({});
+    }
+  }, [fields]);
 
   return (
     <FormControl isRequired>
-      <FormLabel>Viewports (width, height)</FormLabel>
+      <FormLabel>Viewports (width - height order) | Number between 300 and 10000</FormLabel>
       <Grid gridGap="1em">
         {fields.map((viewport: Partial<Viewport & { id: string | number | null | undefined }>, index: number) => (
-          <ViewportInput key={viewport.id} remove={remove} register={register} viewport={viewport} index={index} totalLen={fields.length} />
+          <ViewportInput
+            error={errors?.[index]}
+            key={viewport.id}
+            remove={remove}
+            register={register}
+            viewport={viewport}
+            index={index}
+            totalLen={fields.length}
+          />
         ))}
       </Grid>
       <Flex justifyContent="center" mt="1em">

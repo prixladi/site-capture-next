@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Text, Link, Flex, Menu, MenuButton, MenuItem, MenuList, Icon } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import { GithubRoute, HomeRoute, LoginRute } from '../routes';
+import { GithubRoute, HomeRoute, AuthRoute } from '../routes';
 import { FaBars } from 'react-icons/fa';
 import { useRouter } from 'next/dist/client/router';
 import { FaGithub, FaSignInAlt, FaHome } from 'react-icons/fa';
@@ -63,7 +63,7 @@ const InlineNavigation = () => (
     <LinkText href={HomeRoute} icon={FaHome}>
       Home
     </LinkText>
-    <LinkText href={LoginRute} icon={FaSignInAlt}>
+    <LinkText href={AuthRoute} icon={FaSignInAlt}>
       Sign in
     </LinkText>
     <LinkText href={GithubRoute} icon={FaGithub}>
@@ -94,8 +94,8 @@ const BurgerNavigation = () => {
               Home
             </LinkText>
           </MenuItem>
-          <MenuItem onClick={pushFunction(LoginRute)}>
-            <LinkText icon={FaSignInAlt} href={LoginRute}>
+          <MenuItem onClick={pushFunction(AuthRoute)}>
+            <LinkText icon={FaSignInAlt} href={AuthRoute}>
               Sign in
             </LinkText>
           </MenuItem>

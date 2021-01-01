@@ -12,7 +12,7 @@ const ColorModeButton: React.FC<ColorModeSwitcherProps> = (props) => {
   return (
     <Flex>
       <IconButton
-        fontSize={['1.5em', '1.8em', '2em', '2.5em']}
+        fontSize={['2em', '2em', '2em', '2.5em']}
         variant="ghost"
         color="current"
         onClick={toggleColorMode}

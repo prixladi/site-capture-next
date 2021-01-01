@@ -1,4 +1,4 @@
-mutation updateTemplate($id: ID!, $update: UpdateSiteInput!) {
+mutation updateTemplate($id: ID!, $update: UpdateTemplateInput!) {
   template {
     update(id: $id, update: $update) {
       ...mutationResultFields

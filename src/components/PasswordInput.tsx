@@ -6,24 +6,24 @@ import InputBase from './InputBase';
 type Props = {
   register: (rules?: RegisterOptions) => Ref<HTMLInputElement>;
   errorMessage?: string;
+  validateLen?: boolean;
+  newPassword?: boolean;
 };
 
-const UrlInput: React.FC<Props> = ({ register, errorMessage }: Props) => (
+const PasswordInput: React.FC<Props> = ({ register, errorMessage, validateLen, newPassword }: Props) => (
   <InputBase
+    autoComplete={newPassword ? 'new-password' : 'current-password'}
     errorMessage={errorMessage}
     register={register({
       required: { value: true, message: requiredMessage },
-      pattern: {
-        value: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
-        message: 'Field must be valid url',
-      },
+      minLength: validateLen ? { value: 6, message: 'Field must be at least 6 chacters long' } : undefined,
     })}
     isRequired
-    placeholder="Url"
-    label="Site Url"
-    name="url"
-    type="url"
+    placeholder="*********"
+    label="Password"
+    name="password"
+    type="password"
   />
 );
 
-export default UrlInput;
+export default PasswordInput;

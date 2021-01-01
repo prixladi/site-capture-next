@@ -26,8 +26,19 @@ export type Job = {
   __typename?: 'Job';
   id: Scalars['ID'];
   progress: Scalars['Float'];
-  items?: Maybe<Array<ProgressItem>>;
+  items: Array<ProgressItem>;
   status: Scalars['Boolean'];
+  errorMessage?: Maybe<Scalars['String']>;
+  zipFileId?: Maybe<Scalars['String']>;
+};
+
+export type JobUpdated = {
+  __typename?: 'JobUpdated';
+  id: Scalars['ID'];
+  progress: Scalars['Float'];
+  status: Scalars['Boolean'];
+  item?: Maybe<ProgressItem>;
+  errorMessage?: Maybe<Scalars['String']>;
   zipFileId?: Maybe<Scalars['String']>;
 };
 
@@ -64,6 +75,16 @@ export type Mutation = {
 
 export type MutationRunAnonymousJobArgs = {
   job?: Maybe<NewJobInput>;
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  /** Subscribes for updates about job. */
+  anonymousJobUpdated: JobUpdated;
+};
+
+export type SubscriptionAnonymousJobUpdatedArgs = {
+  id: Scalars['ID'];
 };
 
 export type Me = {
@@ -166,7 +187,7 @@ export type SiteMutation = {
   /** Deletes site and returns result. */
   delete: MutationResult;
   /** Runs job using data from existing site.  */
-  runJob: MutationResult;
+  runJob: MutationIdResult;
 };
 
 export type SiteMutationCreateArgs = {
@@ -225,16 +246,21 @@ export type TemplateMutationCreateArgs = {
 
 export type TemplateMutationUpdateArgs = {
   id?: Maybe<Scalars['ID']>;
-  update?: Maybe<UpdateSiteInput>;
+  update?: Maybe<UpdateTemplateInput>;
 };
 
 export type TemplateMutationDeleteArgs = {
   id?: Maybe<Scalars['ID']>;
 };
 
-export type JobFieldsFragment = { __typename?: 'Job' } & Pick<Job, 'id' | 'progress' | 'status' | 'zipFileId'> & {
-    items?: Maybe<Array<{ __typename?: 'ProgressItem' } & ProgressItemFieldsFragment>>;
+export type JobFieldsFragment = { __typename?: 'Job' } & Pick<Job, 'id' | 'progress' | 'status' | 'zipFileId' | 'errorMessage'> & {
+    items: Array<{ __typename?: 'ProgressItem' } & ProgressItemFieldsFragment>;
   };
+
+export type JobUpdatedFieldsFragment = { __typename?: 'JobUpdated' } & Pick<
+  JobUpdated,
+  'id' | 'progress' | 'status' | 'zipFileId' | 'errorMessage'
+> & { item?: Maybe<{ __typename?: 'ProgressItem' } & ProgressItemFieldsFragment> };
 
 export type MutationIdResultFieldsFragment = { __typename?: 'MutationIdResult' } & Pick<MutationIdResult, 'status' | 'id'>;
 
@@ -285,7 +311,7 @@ export type RunSiteJobMutationVariables = Exact<{
 }>;
 
 export type RunSiteJobMutation = { __typename?: 'Mutation' } & {
-  site: { __typename?: 'SiteMutation' } & { runJob: { __typename?: 'MutationResult' } & MutationResultFieldsFragment };
+  site: { __typename?: 'SiteMutation' } & { runJob: { __typename?: 'MutationIdResult' } & MutationIdResultFieldsFragment };
 };
 
 export type UpdateSiteMutationVariables = Exact<{
@@ -315,7 +341,7 @@ export type DeleteTemplateMutation = { __typename?: 'Mutation' } & {
 
 export type UpdateTemplateMutationVariables = Exact<{
   id: Scalars['ID'];
-  update: UpdateSiteInput;
+  update: UpdateTemplateInput;
 }>;
 
 export type UpdateTemplateMutation = { __typename?: 'Mutation' } & {
@@ -353,6 +379,14 @@ export type TemplateQuery = { __typename?: 'Query' } & {
   me: { __typename?: 'Me' } & { template?: Maybe<{ __typename?: 'Template' } & TemplateFieldsFragment> };
 };
 
+export type AnonymousJobUpdatedSubscriptionVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type AnonymousJobUpdatedSubscription = { __typename?: 'Subscription' } & {
+  anonymousJobUpdated: { __typename?: 'JobUpdated' } & JobUpdatedFieldsFragment;
+};
+
 export const ProgressItemFieldsFragmentDoc = gql`
   fragment progressItemFields on ProgressItem {
     url
@@ -366,7 +400,21 @@ export const JobFieldsFragmentDoc = gql`
     progress
     status
     zipFileId
+    errorMessage
     items {
+      ...progressItemFields
+    }
+  }
+  ${ProgressItemFieldsFragmentDoc}
+`;
+export const JobUpdatedFieldsFragmentDoc = gql`
+  fragment jobUpdatedFields on JobUpdated {
+    id
+    progress
+    status
+    zipFileId
+    errorMessage
+    item {
       ...progressItemFields
     }
   }
@@ -533,11 +581,11 @@ export const RunSiteJobDocument = gql`
   mutation runSiteJob($id: ID!) {
     site {
       runJob(id: $id) {
-        ...mutationResultFields
+        ...mutationIdResultFields
       }
     }
   }
-  ${MutationResultFieldsFragmentDoc}
+  ${MutationIdResultFieldsFragmentDoc}
 `;
 export type RunSiteJobMutationFn = Apollo.MutationFunction<RunSiteJobMutation, RunSiteJobMutationVariables>;
 
@@ -675,7 +723,7 @@ export type DeleteTemplateMutationHookResult = ReturnType<typeof useDeleteTempla
 export type DeleteTemplateMutationResult = Apollo.MutationResult<DeleteTemplateMutation>;
 export type DeleteTemplateMutationOptions = Apollo.BaseMutationOptions<DeleteTemplateMutation, DeleteTemplateMutationVariables>;
 export const UpdateTemplateDocument = gql`
-  mutation updateTemplate($id: ID!, $update: UpdateSiteInput!) {
+  mutation updateTemplate($id: ID!, $update: UpdateTemplateInput!) {
     template {
       update(id: $id, update: $update) {
         ...mutationResultFields
@@ -857,3 +905,38 @@ export function useTemplateLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<T
 export type TemplateQueryHookResult = ReturnType<typeof useTemplateQuery>;
 export type TemplateLazyQueryHookResult = ReturnType<typeof useTemplateLazyQuery>;
 export type TemplateQueryResult = Apollo.QueryResult<TemplateQuery, TemplateQueryVariables>;
+export const AnonymousJobUpdatedDocument = gql`
+  subscription anonymousJobUpdated($id: ID!) {
+    anonymousJobUpdated(id: $id) {
+      ...jobUpdatedFields
+    }
+  }
+  ${JobUpdatedFieldsFragmentDoc}
+`;
+
+/**
+ * __useAnonymousJobUpdatedSubscription__
+ *
+ * To run a query within a React component, call `useAnonymousJobUpdatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useAnonymousJobUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAnonymousJobUpdatedSubscription({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useAnonymousJobUpdatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<AnonymousJobUpdatedSubscription, AnonymousJobUpdatedSubscriptionVariables>,
+) {
+  return Apollo.useSubscription<AnonymousJobUpdatedSubscription, AnonymousJobUpdatedSubscriptionVariables>(
+    AnonymousJobUpdatedDocument,
+    baseOptions,
+  );
+}
+export type AnonymousJobUpdatedSubscriptionHookResult = ReturnType<typeof useAnonymousJobUpdatedSubscription>;
+export type AnonymousJobUpdatedSubscriptionResult = Apollo.SubscriptionResult<AnonymousJobUpdatedSubscription>;

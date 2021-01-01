@@ -1,7 +1,7 @@
 mutation runSiteJob($id: ID!) {
   site {
     runJob(id: $id) {
-      ...mutationResultFields
+      ...mutationIdResultFields
     }
   }
 }

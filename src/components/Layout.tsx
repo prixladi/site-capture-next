@@ -17,7 +17,7 @@ const Layout: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           </Container>
         )}
 
-        <Container maxW={['30em', '40em', '50em', '60em']} marginTop={['1em', '1em', '1em', '3em']}>
+        <Container maxW="100%" marginTop={['1em', '1em', '1em', '3em']}>
           <Component {...pageProps} />
         </Container>
 

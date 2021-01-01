@@ -1,10 +1,10 @@
-fragment jobFields on Job  {
+fragment jobUpdatedFields on JobUpdated  {
   id
   progress
   status
   zipFileId
   errorMessage
-  items {
+  item {
       ...progressItemFields
   }
 }
