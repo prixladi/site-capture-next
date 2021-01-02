@@ -5,23 +5,22 @@ import { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
 import { split, HttpLink } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { WebSocketLink } from '@apollo/client/link/ws';
-import { Manager } from '../authority';
 import { setContext } from '@apollo/client/link/context';
 
-const createApolloClient = (authorityManager: Manager): ApolloClient<NormalizedCacheObject> => {
+const createApolloClient = (getBearerToken: () => string | null): ApolloClient<NormalizedCacheObject> => {
   const config = getGraphqlConfig();
   if (!config.url) {
     throw new Error('Graphql endpoint url was not specified in config.');
   }
 
   const authLink = setContext((_, { headers }) => {
-    const tokens = authorityManager.getTokens();
+    const token = getBearerToken();
 
-    return tokens.bearerToken
+    return token
       ? {
           headers: {
             ...headers,
-            Authorization: `Bearer ${tokens.bearerToken}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       : { headers: {} };
@@ -37,11 +36,11 @@ const createApolloClient = (authorityManager: Manager): ApolloClient<NormalizedC
       reconnect: true,
       lazy: true,
       connectionParams: () => {
-        const tokens = authorityManager.getTokens();
+        const token = getBearerToken();
 
-        return tokens.bearerToken
+        return token
           ? {
-              Authorization: `Bearer ${tokens.bearerToken}`,
+              Authorization: `Bearer ${token}`,
             }
           : {};
       },

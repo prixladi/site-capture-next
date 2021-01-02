@@ -10,7 +10,6 @@ import { useRouter } from 'next/dist/client/router';
 import { defaultCallbacks } from '../../services/authorityService';
 import { CenterLink, Page } from './Shared';
 import { forgottenPasswordSentNotification } from '../../services/notificationService';
-import { AuthRoute } from '../../routes';
 
 type Values = {
   email: string;
@@ -29,7 +28,7 @@ const ForgottenPassword: React.FC<Props> = ({ goto }: Props) => {
     const result = await manager.sendForgottenPassword(values.email, defaultCallbacks(router));
     if (result.ok) {
       forgottenPasswordSentNotification();
-      goto('Login');
+      goto('Login')
     }
   };
 

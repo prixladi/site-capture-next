@@ -12,6 +12,7 @@ import { defaultCallbacks, onSignIn } from '../../services/authorityService';
 import { CenterLink, GButton, Page } from './Shared';
 import { StatusCodes } from 'http-status-codes';
 import { registeredNotification } from '../../services/notificationService';
+import useEssentials from '../../hooks/useEssentials';
 
 type Values = {
   email: string;
@@ -26,17 +27,16 @@ const emailErrorMessage = 'Account with this email already exist';
 
 const Register: React.FC<Props> = ({ goto }: Props) => {
   const { handleSubmit, register, errors, setError, setValue, formState } = useForm<Values>();
-  const router = useRouter();
-  const manager = useAuthorityManager();
+  const { router, authManager, apollo } = useEssentials();
 
   const onSubmit = async (values: Values) => {
     const callbacks = defaultCallbacks(router);
-    const result = await manager.register(values, callbacks);
+    const result = await authManager.register(values, callbacks);
     if (result.ok) {
       registeredNotification();
-      const loginResult = await manager.passwordLogin(values, callbacks);
+      const loginResult = await authManager.passwordLogin(values, callbacks);
       if (loginResult.ok) {
-        await onSignIn(router);
+        await onSignIn(router, apollo);
       } else {
         console.error(loginResult);
       }

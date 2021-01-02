@@ -18,15 +18,19 @@ const registeredNotification = (): void => {
 };
 
 const loggedInNotification = (): void => {
-  send({ description: 'Successfuly logged in.', status: 'success' });
+  send({ description: 'Successfuly signed in.', status: 'success' });
 };
 
 const loggedOutNotification = (): void => {
+  send({ description: 'Successfuly signed out.', status: 'info' });
+};
+
+const loginExpiredNotification = (): void => {
   send({ description: 'You session expired please sign in again.', status: 'info' });
 };
 
 const loginNeededNotification = (): void => {
-  send({ description: 'You need to login first.', status: 'info' });
+  send({ description: 'You need to sign in first.', status: 'info' });
 };
 
 const forgottenPasswordSentNotification = (): void => {
@@ -38,6 +42,7 @@ export {
   apiServerErrorNotification,
   loggedInNotification,
   loggedOutNotification,
+  loginExpiredNotification,
   loginNeededNotification,
   registeredNotification,
   forgottenPasswordSentNotification,

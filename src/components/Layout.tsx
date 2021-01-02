@@ -3,15 +3,15 @@ import { Box, Container, Grid } from '@chakra-ui/react';
 import { AppProps } from 'next/app';
 import Navigation from './Navigation';
 import Footer from './Footer';
-import useSmallLayout from '../hooks/useSmallLayout';
+import useCompactLayout from '../hooks/useCompactLayout';
 
 const Layout: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
-  const isSmallLayout = useSmallLayout();
+  const isCompact = useCompactLayout();
 
   return (
     <Box position="relative" minH="100vh">
       <Grid pb={['4em', '5em', '6em', '6em']} gridGap="1em" templateColumns={['1fr', '1fr', '1fr', '3fr 1fr']}>
-        {isSmallLayout && (
+        {isCompact && (
           <Container maxW={['30em', '40em', '50em', '60em']} marginTop={['1.5em']}>
             <Navigation />
           </Container>
@@ -21,7 +21,7 @@ const Layout: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           <Component {...pageProps} />
         </Container>
 
-        {!isSmallLayout && (
+        {!isCompact && (
           <Container maxW={['30em', '40em', '50em', '60em']} marginTop={['1.5em']}>
             <Navigation />
           </Container>

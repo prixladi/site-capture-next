@@ -11,6 +11,9 @@ import { useRouter } from 'next/dist/client/router';
 import { defaultCallbacks, onSignIn } from '../../services/authorityService';
 import { CenterLink, GButton, Page } from './Shared';
 import { StatusCodes } from 'http-status-codes';
+import useApollo from '../../apollo/useApollo';
+import { useApolloClient } from '@apollo/client';
+import useEssentials from '../../hooks/useEssentials';
 
 type Values = {
   email: string;
@@ -25,13 +28,12 @@ const emailErrorMessage = 'Invalid email or password';
 
 const Login: React.FC<Props> = ({ goto }: Props) => {
   const { handleSubmit, register, errors, setError, setValue, formState } = useForm<Values>();
-  const router = useRouter();
-  const manager = useAuthorityManager();
+  const { router, authManager, apollo } = useEssentials();
 
   const onSubmit = async (values: Values) => {
-    const result = await manager.passwordLogin(values, defaultCallbacks(router));
+    const result = await authManager.passwordLogin(values, defaultCallbacks(router));
     if (result.ok) {
-      await onSignIn(router);
+      await onSignIn(router, apollo);
     } else {
       if (result.status === StatusCodes.BAD_REQUEST) {
         setError('email', { message: emailErrorMessage });

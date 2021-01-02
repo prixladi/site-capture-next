@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Container, Grid, Heading, Icon } from '@chakra-ui/react';
+import { Box, Grid, Heading, Icon } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import Text from '../components/Text';
 import QualitySlider from '../components/QualitySlider';
@@ -12,6 +12,7 @@ import { AuthRoute } from '../routes';
 import JobProgress from '../components/JobProgress';
 import { isServer } from '../configs';
 import { FaCamera } from 'react-icons/fa';
+import { WideContent } from '../components/Content';
 
 type Values = {
   url: string;
@@ -88,7 +89,7 @@ const Index: React.FC = () => {
   };
 
   return (
-    <Container p="0" maxW={['30em', '40em', '50em', '60em']}>
+    <WideContent>
       <Box mb="2em">
         <Heading as="h1" mb="0.5em">
           Site Capture
@@ -110,7 +111,7 @@ const Index: React.FC = () => {
         </Grid>
       </form>
       {jobId && <JobProgress jobId={jobId} setLoading={setLoading} />}
-    </Container>
+    </WideContent>
   );
 };
 

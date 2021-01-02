@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Collapse, Container } from '@chakra-ui/react';
+import { Collapse } from '@chakra-ui/react';
 import Login from '../components/auth/Login';
 import Register from '../components/auth/Register';
 import { Page } from '../components/auth/Shared';
 import ForgottenPassword from '../components/auth/ForgottenPassword';
+import { NarrowContent } from '../components/Content';
 
 const Auth: React.FC = () => {
   const [page, setPage] = useState('Login' as Page);
@@ -11,7 +12,7 @@ const Auth: React.FC = () => {
 
   return (
     <>
-      <Container p="0" maxW={['30em', '30em', '30em', '30em']}>
+      <NarrowContent>
         <Collapse animateOpacity in={page === 'Login'}>
           <Login goto={goto} />
         </Collapse>
@@ -21,7 +22,7 @@ const Auth: React.FC = () => {
         <Collapse animateOpacity in={page === 'ForgottenPassword'}>
           <ForgottenPassword goto={goto} />
         </Collapse>
-      </Container>
+      </NarrowContent>
     </>
   );
 };

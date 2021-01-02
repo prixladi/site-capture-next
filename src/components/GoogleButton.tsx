@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
 import { getGoogleConfig } from '../configs';
-import { useRouter } from 'next/router';
-import { useAuthorityManager } from '../authority';
 import { defaultCallbacks, onSignIn } from '../services/authorityService';
+import useEssentials from '../hooks/useEssentials';
 
 type Props = {
   render: (props: { onClick: () => void; disabled?: boolean; isLoading: boolean }) => JSX.Element;
 };
 
 const GoogleButton: React.FC<Props> = ({ render }: Props) => {
-  const router = useRouter();
-  const manager = useAuthorityManager();
+  const { router, authManager, apollo } = useEssentials();
   const [isLoading, setIsLoading] = useState(false);
 
   return (
@@ -22,9 +20,9 @@ const GoogleButton: React.FC<Props> = ({ render }: Props) => {
         setIsLoading(true);
       }}
       onSuccess={async (response) => {
-        const result = await manager.googleLogin({ idToken: (response as GoogleLoginResponse).tokenId }, defaultCallbacks(router));
+        const result = await authManager.googleLogin({ idToken: (response as GoogleLoginResponse).tokenId }, defaultCallbacks(router));
         if (result.ok) {
-          await onSignIn(router);
+          await onSignIn(router, apollo);
         } else {
           console.error('Error while logging in.', result);
         }

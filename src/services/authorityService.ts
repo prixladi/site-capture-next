@@ -1,7 +1,8 @@
+import { ApolloClient } from '@apollo/client';
 import { NextRouter } from 'next/dist/client/router';
-import { Callbacks } from '../authority';
+import { Callbacks, Manager } from '../authority';
 import { HomeRoute, AuthRoute } from '../routes';
-import { authServerErrorNotification, loggedInNotification, loggedOutNotification } from './notificationService';
+import { authServerErrorNotification, loggedInNotification, loggedOutNotification, loginExpiredNotification } from './notificationService';
 
 const defaultCallbacks = (router: NextRouter): Callbacks => ({
   onError: async (err) => {
@@ -9,14 +10,29 @@ const defaultCallbacks = (router: NextRouter): Callbacks => ({
     console.error(err);
   },
   onUnauthorized: async () => {
-    loggedOutNotification();
+    loginExpiredNotification();
     await router.push(AuthRoute);
   },
 });
 
-const onSignIn = async (router: NextRouter): Promise<void> => {
+const onSignIn = async (router: NextRouter, apollo: ApolloClient<object>): Promise<void> => {
   loggedInNotification();
+  await apollo.cache.reset();
   await router.push(HomeRoute);
 };
 
-export { defaultCallbacks, onSignIn };
+const onLoginExpired = async (manager: Manager, router: NextRouter, apollo: ApolloClient<object>): Promise<void> => {
+  loginExpiredNotification();
+  await apollo.cache.reset();
+  await manager.logout();
+  await router.push(AuthRoute);
+};
+
+const signOut = async (manager: Manager, router: NextRouter, apollo: ApolloClient<object>): Promise<void> => {
+  await manager.logout();
+  loggedOutNotification();
+  await apollo.cache.reset();
+  await router.push(AuthRoute);
+};
+
+export { defaultCallbacks, onLoginExpired, onSignIn, signOut };

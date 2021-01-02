@@ -4,6 +4,7 @@ import { getBearerToken, getRefreshToken } from './helpers';
 type UserProfile = {
   id: string;
   email: string;
+  tokenExpire: number;
   username?: string;
   givenName?: string;
   familyName?: string;
@@ -19,6 +20,7 @@ const usernameClaim = 'username';
 const emailClaim = 'email';
 const givenNameClaim = 'given_name';
 const familyNameClaim = 'family_name';
+const expirationClaim = 'exp';
 
 const getUserProfile = (): UserProfile | null => {
   const bearerToken = localStorage.getItem('bearerToken');
@@ -34,6 +36,7 @@ const getUserProfile = (): UserProfile | null => {
     username: token[usernameClaim],
     givenName: token[givenNameClaim],
     familyName: token[familyNameClaim],
+    tokenExpire: parseInt(token[expirationClaim]),
   };
 };
 

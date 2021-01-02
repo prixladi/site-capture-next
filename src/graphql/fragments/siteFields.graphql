@@ -1,7 +1,8 @@
 fragment siteFields on Site {
   id
-  quality
+  name
   url
+  quality
   subsites
   viewports {
   ...viewportFields
