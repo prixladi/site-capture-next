@@ -28,7 +28,7 @@ const ForgottenPassword: React.FC<Props> = ({ goto }: Props) => {
     const result = await manager.sendForgottenPassword(values.email, defaultCallbacks(router));
     if (result.ok) {
       forgottenPasswordSentNotification();
-      goto('Login')
+      goto('Login');
     }
   };
 

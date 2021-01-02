@@ -52,9 +52,9 @@ const tryLoadValues = (): Values | undefined => {
 
 const Index: React.FC = () => {
   const [runAnounymouJob] = useRunAnonymousJobMutation();
-  const { handleSubmit, register, control, errors, getValues, setValue } = useForm<Values>();
+  const { handleSubmit, register, control, errors, getValues, setValue, formState } = useForm<Values>();
   const [jobId, setJobId] = useState(tryLoadJobId());
-  const [loading, setLoading] = useState(false);
+  const [capturing, setCapturing] = useState(false);
 
   useEffect(() => {
     const values = tryLoadValues();
@@ -104,13 +104,13 @@ const Index: React.FC = () => {
           <UrlInput errorMessage={errors.url?.message} register={register} />
           <QualitySlider register={register} />
           <ViewportInputs errors={errors.viewports} register={register} control={control} />
-          <Button submit isLoading={loading}>
+          <Button submit isLoading={capturing || formState.isSubmitting}>
             <Icon mr="0.2em" as={FaCamera} />
             Capture Site
           </Button>
         </Grid>
       </form>
-      {jobId && <JobProgress jobId={jobId} setLoading={setLoading} />}
+      {jobId && <JobProgress jobId={jobId} setLoading={setCapturing} />}
     </WideContent>
   );
 };

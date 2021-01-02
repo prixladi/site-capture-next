@@ -6,13 +6,9 @@ import PasswordInput from '../PasswordInput';
 import { useForm } from 'react-hook-form';
 import Button from '../Button';
 import { FaEnvelope } from 'react-icons/fa';
-import { useAuthorityManager } from '../../authority';
-import { useRouter } from 'next/dist/client/router';
 import { defaultCallbacks, onSignIn } from '../../services/authorityService';
 import { CenterLink, GButton, Page } from './Shared';
 import { StatusCodes } from 'http-status-codes';
-import useApollo from '../../apollo/useApollo';
-import { useApolloClient } from '@apollo/client';
 import useEssentials from '../../hooks/useEssentials';
 
 type Values = {

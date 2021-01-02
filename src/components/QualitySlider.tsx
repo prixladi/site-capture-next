@@ -4,12 +4,13 @@ import { RegisterOptions } from 'react-hook-form';
 
 type Props = {
   register: (rules?: RegisterOptions) => Ref<HTMLInputElement>;
+  defaultQuality?: number;
 };
 
-const defaultQuality = 100;
+const _defaultQuality = 100;
 
-const QualitySlider: React.FC<Props> = ({ register }: Props) => {
-  const [value, setValue] = useState(defaultQuality);
+const QualitySlider: React.FC<Props> = ({ register, defaultQuality }: Props) => {
+  const [value, setValue] = useState(defaultQuality ?? _defaultQuality);
 
   return (
     <FormControl id="quality" isRequired>
@@ -18,7 +19,7 @@ const QualitySlider: React.FC<Props> = ({ register }: Props) => {
         onChange={(num) => setValue(num)}
         name="quality"
         aria-label="slider-ex-1"
-        defaultValue={defaultQuality}
+        defaultValue={defaultQuality ?? _defaultQuality}
         min={1}
         max={100}
         ref={register({ required: true, setValueAs: parseInt })}

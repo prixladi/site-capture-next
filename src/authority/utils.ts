@@ -23,12 +23,12 @@ const familyNameClaim = 'family_name';
 const expirationClaim = 'exp';
 
 const getUserProfile = (): UserProfile | null => {
-  const bearerToken = localStorage.getItem('bearerToken');
-  if (!bearerToken) {
+  const tokens = getTokens();
+  if (!tokens.bearerToken) {
     return null;
   }
 
-  const token = jwt_decode(bearerToken) as { [claim: string]: string };
+  const token = jwt_decode(tokens.bearerToken) as { [claim: string]: string };
 
   return {
     id: token[idClaim],

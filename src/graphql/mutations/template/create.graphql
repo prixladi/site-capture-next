@@ -1,7 +1,7 @@
 mutation createTemplate($template: NewTemplateInput!) {
   template {
     create(template: $template) {
-        ...mutationIdResultFields
+      ...templateFields
     }
   }
 }

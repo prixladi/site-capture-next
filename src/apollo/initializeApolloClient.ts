@@ -7,10 +7,12 @@ import createApolloClient from './createApolloClient';
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
 const initializeApolloClient = (authorityManager: Manager, initialState?: NormalizedCacheObject): ApolloClient<NormalizedCacheObject> => {
-  const _apolloClient = apolloClient ?? createApolloClient(() =>  {
-    const tokens = authorityManager.getTokens();
-    return tokens.bearerToken;
-  });
+  const _apolloClient =
+    apolloClient ??
+    createApolloClient(() => {
+      const tokens = authorityManager.getTokens();
+      return tokens.bearerToken;
+    });
 
   // If your page has Next.js data fetching methods that use Apollo Client,
   // the initial state gets hydrated here

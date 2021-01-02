@@ -28,7 +28,7 @@ const Layout: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         )}
       </Grid>
 
-      <Box position="absolute" w="100%" h={['3em', '4em', '5em', '5em']} bottom="0">
+      <Box position="absolute" w="100%" h={['3em', '3em', '4em', '4em']} bottom="0">
         <Footer />
       </Box>
     </Box>

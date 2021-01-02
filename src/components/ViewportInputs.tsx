@@ -1,11 +1,12 @@
 import React, { Ref, useEffect } from 'react';
-import { FormControl, FormLabel, Flex, Grid, IconButton } from '@chakra-ui/react';
+import { FormControl, FormLabel, Flex, Grid } from '@chakra-ui/react';
 import { Control, FieldErrors, RegisterOptions, useFieldArray } from 'react-hook-form';
-import { FaPlus, FaMinus } from 'react-icons/fa';
 import InputBase from './InputBase';
 import { requiredMessage } from '../utils/validationUtils';
+import PlusButton from './PlusButton';
+import MinusButton from './MinusButton';
 
-export type Viewport = {
+type Viewport = {
   width: number;
   height: number;
 };
@@ -58,17 +59,7 @@ const ViewportInput: React.FC<InputProps> = ({ register, remove, index, viewport
         name={heigthName}
         register={register(dimensionRules)}
       />
-      {totalLen > 1 && (
-        <IconButton
-          onClick={() => remove(index)}
-          background="transparent"
-          _hover={{ background: 'transparent' }}
-          aria-label="remove-button"
-          as={FaMinus}
-          fontSize="2em"
-          color="red.500"
-        />
-      )}
+      {totalLen > 1 && <MinusButton onClick={() => remove(index)} />}
     </Flex>
   );
 };
@@ -102,18 +93,11 @@ const ViewPortInputs: React.FC<Props> = ({ register, control, errors }: Props) =
         ))}
       </Grid>
       <Flex justifyContent="center" mt="1em">
-        <IconButton
-          onClick={() => append({})}
-          background="transparent"
-          _hover={{ background: 'transparent' }}
-          aria-label="add-button"
-          as={FaPlus}
-          fontSize="2em"
-          color="green.500"
-        />
+        <PlusButton onClick={() => append({})} />
       </Flex>
     </FormControl>
   );
 };
 
+export type { Viewport };
 export default ViewPortInputs;

@@ -1,7 +1,7 @@
 mutation updateSite($id: ID!, $update: UpdateSiteInput!) {
   site {
     update(id: $id, update: $update) {
-      ...mutationResultFields
+      ...siteFields
     }
   }
 }

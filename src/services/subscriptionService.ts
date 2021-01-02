@@ -22,7 +22,7 @@ const getAnnonymousJobSubscriptionOptions = (
         return prev;
       }
 
-      const { item, __typename, ...stack } = subscriptionData.data.anonymousJobUpdated;
+      const { item, __typename: _, ...stack } = subscriptionData.data.anonymousJobUpdated;
 
       const getItems = () => {
         if (!anonymousJob?.items) {

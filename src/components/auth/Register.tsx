@@ -1,13 +1,11 @@
 import React from 'react';
-import { Box, Container, Grid, Heading, Icon, Text as ChakraText, Link } from '@chakra-ui/react';
+import { Box, Container, Grid, Heading, Icon, Text as ChakraText } from '@chakra-ui/react';
 import Text from '../Text';
 import EmailInput from '../EmailInput';
 import PasswordInput from '../PasswordInput';
 import { useForm } from 'react-hook-form';
 import Button from '../Button';
 import { FaUserAlt } from 'react-icons/fa';
-import { useAuthorityManager } from '../../authority';
-import { useRouter } from 'next/dist/client/router';
 import { defaultCallbacks, onSignIn } from '../../services/authorityService';
 import { CenterLink, GButton, Page } from './Shared';
 import { StatusCodes } from 'http-status-codes';

@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useEssentials from '../hooks/useEssentials';
 import { defaultCallbacks, onLoginExpired } from '../services/authorityService';
 
-const withAuthentication = <TProps extends object>(Component: React.FC<TProps>, Skeleton: React.FC) => {
-  return (props: TProps) => {
+const withAuthentication = <TProps extends Record<string, string>>(Component: React.FC<TProps>, Skeleton: React.FC) => {
+  return (props: TProps): JSX.Element => {
     const [skeleton, setSkeleton] = useState(true);
     const { router, authManager, apollo } = useEssentials();
     const isMounted = useRef(false);

@@ -2,7 +2,10 @@ import { createStandaloneToast, UseToastOptions } from '@chakra-ui/react';
 
 const send = (options: UseToastOptions) => {
   const toast = createStandaloneToast();
-  toast(options);
+  toast({
+    duration: 10 * 1000,
+    ...options,
+  });
 };
 
 const authServerErrorNotification = (): void => {
@@ -13,12 +16,36 @@ const apiServerErrorNotification = (): void => {
   send({ description: 'Aplication server returned error response.', status: 'error' });
 };
 
+const notFoundNotification = (): void => {
+  send({ description: 'Requested resource was not found.', status: 'error' });
+};
+
 const registeredNotification = (): void => {
   send({ description: 'Successfuly registered.', status: 'success' });
 };
 
 const loggedInNotification = (): void => {
   send({ description: 'Successfuly signed in.', status: 'success' });
+};
+
+const forgottenPasswordSentNotification = (): void => {
+  send({ description: 'Forgotten password reset has been sent to your email.', status: 'success' });
+};
+
+const siteCreatedNotification = (): void => {
+  send({ description: 'New site has been successfuly created.', status: 'success' });
+};
+
+const templateCreatedNotification = (): void => {
+  send({ description: 'New template has been successfuly created.', status: 'success' });
+};
+
+const siteUpdatedNotification = (): void => {
+  send({ description: 'Site has been successfuly updated.', status: 'success' });
+};
+
+const templateUpdatedNotification = (): void => {
+  send({ description: 'Template has been successfuly updated.', status: 'success' });
 };
 
 const loggedOutNotification = (): void => {
@@ -33,14 +60,15 @@ const loginNeededNotification = (): void => {
   send({ description: 'You need to sign in first.', status: 'info' });
 };
 
-const forgottenPasswordSentNotification = (): void => {
-  send({ description: 'Forgotten password reset has been sent to your email.', status: 'success' });
-};
-
 export {
   authServerErrorNotification,
   apiServerErrorNotification,
+  notFoundNotification,
   loggedInNotification,
+  siteCreatedNotification,
+  templateCreatedNotification,
+  siteUpdatedNotification,
+  templateUpdatedNotification,
   loggedOutNotification,
   loginExpiredNotification,
   loginNeededNotification,
