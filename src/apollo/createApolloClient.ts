@@ -17,14 +17,16 @@ const createApolloClient = (getBearerToken: () => string | null): ApolloClient<N
   const authLink = setContext((_, { headers }) => {
     const token = getBearerToken();
 
-    return token
-      ? {
-          headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      : { headers: {} };
+    if (token) {
+      return {
+        headers: {
+          ...headers,
+          Authorization: `Bearer ${token}`,
+        },
+      };
+    }
+
+    return { headers: {} };
   });
 
   const httpLink = new HttpLink({
@@ -39,11 +41,13 @@ const createApolloClient = (getBearerToken: () => string | null): ApolloClient<N
       connectionParams: () => {
         const token = getBearerToken();
 
-        return token
-          ? {
-              Authorization: `Bearer ${token}`,
-            }
-          : {};
+        if (token) {
+          return {
+            Authorization: `Bearer ${token}`,
+          };
+        }
+        
+        return {};
       },
     },
     webSocketImpl: isServer ? ws : undefined,

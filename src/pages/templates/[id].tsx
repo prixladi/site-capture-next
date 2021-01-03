@@ -24,12 +24,13 @@ type Values = {
 
 const Template: React.FC = () => {
   const [updateSite] = useUpdateTemplateMutation();
+  const [fetch, { data, error, loading }] = useTemplateLazyQuery();
+
   const [id, invalid] = useRouteId();
   const [notFound, setNotFound] = useState(false);
-  const [fetch, { data, error, loading }] = useTemplateLazyQuery();
-  const { handleSubmit, register, control, errors, formState, setValue } = useForm<Values>();
+  const { handleGqlError } = useApolloErrorHandling(error);
 
-  useApolloErrorHandling(error);
+  const { handleSubmit, register, control, errors, formState, setValue } = useForm<Values>();
 
   useEffect(() => {
     if (id) {
@@ -65,10 +66,11 @@ const Template: React.FC = () => {
     const { data, errors } = await updateSite({ variables: { id: id as string, update: values } });
 
     if (!data) {
-      console.error(errors);
-    } else {
-      templateUpdatedNotification();
+      handleGqlError(errors);
+      return;
     }
+
+    templateUpdatedNotification();
   };
 
   return (

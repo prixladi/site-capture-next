@@ -1,28 +1,22 @@
 import { SubscribeToMoreOptions } from '@apollo/client';
-import { AnonymousJobQuery, AnonymousJobUpdatedDocument, AnonymousJobUpdatedSubscription, Exact } from '../graphql';
+import { AnonymousJobQuery, Exact, JobQuery, JobUpdatedDocument, JobUpdatedSubscription } from '../graphql';
 
-const getAnnonymousJobSubscriptionOptions = (
-  id: string,
-): SubscribeToMoreOptions<
-  AnonymousJobQuery,
-  Exact<{
-    id: string;
-  }>,
-  AnonymousJobUpdatedSubscription
-> => {
+type AnonymousJobOptions = SubscribeToMoreOptions<AnonymousJobQuery, Exact<{ id: string }>, JobUpdatedSubscription>;
+
+const getAnnonymousJobSubscriptionOptions = (id: string): AnonymousJobOptions => {
   return {
-    document: AnonymousJobUpdatedDocument,
+    document: JobUpdatedDocument,
     variables: { id },
     updateQuery: (prev, { subscriptionData }) => {
-      const { anonymousJob, ...rest } = prev;
+      const { anonymousJob, ...prevRest } = prev;
       if (!subscriptionData.data) {
         return prev;
       }
-      if (anonymousJob && anonymousJob.progress > subscriptionData.data.anonymousJobUpdated.progress) {
+      if (anonymousJob && anonymousJob.progress > subscriptionData.data.jobUpdated.progress) {
         return prev;
       }
 
-      const { item, __typename: _, ...stack } = subscriptionData.data.anonymousJobUpdated;
+      const { item, __typename: _, ...jobUpdatedRest } = subscriptionData.data.jobUpdated;
 
       const getItems = () => {
         if (!anonymousJob?.items) {
@@ -32,16 +26,62 @@ const getAnnonymousJobSubscriptionOptions = (
         }
       };
 
-      return {
-        ...rest,
+      const newData: AnonymousJobQuery = {
+        ...prevRest,
         anonymousJob: {
-          ...stack,
+          ...jobUpdatedRest,
           __typename: anonymousJob?.__typename,
           items: getItems(),
         },
       };
+
+      return newData;
     },
   };
 };
 
-export { getAnnonymousJobSubscriptionOptions };
+type JobOptions = SubscribeToMoreOptions<JobQuery, Exact<{ id: string }>, JobUpdatedSubscription>;
+
+const getJobSubscriptionOptions = (id: string): JobOptions => {
+  return {
+    document: JobUpdatedDocument,
+    variables: { id },
+    updateQuery: (prev, { subscriptionData }) => {
+      const { me, ...prevRest } = prev;
+      const { job, ...meRest } = me;
+
+      if (!subscriptionData.data) {
+        return prev;
+      }
+      if (job && job.progress > subscriptionData.data.jobUpdated.progress) {
+        return prev;
+      }
+
+      const { item, __typename: _, ...jobUpdatedRest } = subscriptionData.data.jobUpdated;
+
+      const getItems = () => {
+        if (!job?.items) {
+          return item ? [item] : [];
+        } else {
+          return item ? [...job.items, item] : job.items;
+        }
+      };
+
+      const newData: JobQuery = {
+        ...prevRest,
+        me: {
+          ...meRest,
+          job: {
+            ...jobUpdatedRest,
+            __typename: job?.__typename,
+            items: getItems(),
+          },
+        },
+      };
+
+      return newData;
+    },
+  };
+};
+
+export { getAnnonymousJobSubscriptionOptions, getJobSubscriptionOptions };

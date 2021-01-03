@@ -67,9 +67,9 @@ const SubsitesInput: React.FC<Props> = ({ register, control, errors }: Props) =>
           <SubsiteInput error={errors?.[index]} key={subsite.id} remove={remove} register={register} subsite={subsite} index={index} />
         ))}
 
-        <Flex justifyContent="begin">
+        {fields.length < 10 && <Flex justifyContent="begin">
           <PlusButton onClick={() => append({})} />
-        </Flex>
+        </Flex>}
       </Grid>
     </FormControl>
   );

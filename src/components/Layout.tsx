@@ -7,12 +7,13 @@ import useCompactLayout from '../hooks/useCompactLayout';
 
 const Layout: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const isCompact = useCompactLayout();
+  const navSize = ['100%', '42.5em', '53em', '63em'];
 
   return (
     <Box position="relative" minH="100vh">
       <Grid pb={['4em', '5em', '6em', '6em']} gridGap="1em" templateColumns={['1fr', '1fr', '1fr', '3fr 1fr']}>
         {isCompact && (
-          <Container maxW={['30em', '40em', '50em', '60em']} marginTop={['1.5em']}>
+          <Container maxW={navSize} marginTop={['1.5em']}>
             <Navigation />
           </Container>
         )}
@@ -22,7 +23,7 @@ const Layout: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         </Container>
 
         {!isCompact && (
-          <Container maxW={['30em', '40em', '50em', '60em']} marginTop={['1.5em']}>
+          <Container maxW={navSize} marginTop={['2.5em']}>
             <Navigation />
           </Container>
         )}

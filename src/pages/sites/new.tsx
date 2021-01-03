@@ -17,7 +17,8 @@ import DefaultSkeleton from '../../components/DefaultSkeleton';
 import withAuthentication from '../../hoc/withAuthentication';
 import { useAuthorityManager } from '../../authority';
 import { siteOnCreateUpdate } from '../../services/mutationService';
-import { siteCreatedNotification } from '../../services/notificationService';
+import { apiServerErrorNotification, siteCreatedNotification } from '../../services/notificationService';
+import useApolloErrorHandling from '../../hooks/useApolloErrorHandling';
 
 type Values = {
   url: string;
@@ -28,10 +29,13 @@ type Values = {
 };
 
 const NewSite: React.FC = () => {
-  const [createSite] = useCreateSiteMutation();
-  const { handleSubmit, register, control, errors, formState } = useForm<Values>();
+  const [createSite, { error }] = useCreateSiteMutation();
+
   const manager = useAuthorityManager();
   const router = useRouter();
+  const { handleGqlError } = useApolloErrorHandling(error);
+
+  const { handleSubmit, register, control, errors, formState } = useForm<Values>();
 
   const onSubmit = async (values: Values) => {
     const transformedValues = {
@@ -45,7 +49,7 @@ const NewSite: React.FC = () => {
     });
 
     if (!data) {
-      console.error(errors);
+      handleGqlError(errors);
       return;
     }
 

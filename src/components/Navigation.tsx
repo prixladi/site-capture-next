@@ -108,7 +108,7 @@ const BurgerNavigation = () => {
   };
 
   return (
-    <Flex justifyContent="space-between">
+    <Flex m="0" p="0" justifyContent="space-between">
       <ColorModeButton />
       <Menu>
         <MenuButton fontSize="3em">

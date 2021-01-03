@@ -29,6 +29,7 @@ const trimName = (name: string): string => {
 
 const Sites: React.FC = () => {
   const { data, error } = useMeQuery();
+
   const router = useRouter();
   useApolloErrorHandling(error);
 
@@ -44,7 +45,7 @@ const Sites: React.FC = () => {
         </Heading>
         <Text>List of your predefined sites. Click on concerete template to show detail, edit or run capturing.</Text>
       </Box>
-      <Grid gridGap="1.5em">
+      <Grid gridGap="1em">
         <Button onClick={() => router.push(NewSiteRoute)} minW="8em" fontSize="1.3em" colorScheme="yellow">
           Add new site <Icon ml="0.2em" as={FaPlus} />
         </Button>
@@ -65,7 +66,7 @@ const Sites: React.FC = () => {
             <ChakraText fontSize="1.2em" opacity="0.7" key={site.id}>
               <ExternalLink href={site.url}>{trimUrl(site.url)}</ExternalLink>
             </ChakraText>
-            <Divider />
+            <Divider mt="1em" />
           </Grid>
         ))}
       </Grid>

@@ -9,10 +9,11 @@ import ViewportInputs, { Viewport } from '../components/ViewportInputs';
 import { useRunAnonymousJobMutation } from '../graphql';
 import InternalLink from '../components/InternalLink';
 import { AuthRoute } from '../routes';
-import JobProgress from '../components/JobProgress';
+import { AnonymousJobProgress } from '../components/jobProgress';
 import { isServer } from '../configs';
 import { FaCamera } from 'react-icons/fa';
 import { WideContent } from '../components/Content';
+import useApolloErrorHandling from '../hooks/useApolloErrorHandling';
 
 type Values = {
   url: string;
@@ -51,10 +52,13 @@ const tryLoadValues = (): Values | undefined => {
 };
 
 const Index: React.FC = () => {
-  const [runAnounymouJob] = useRunAnonymousJobMutation();
-  const { handleSubmit, register, control, errors, getValues, setValue, formState } = useForm<Values>();
+  const [runAnounymouJob, { error }] = useRunAnonymousJobMutation();
+
   const [jobId, setJobId] = useState(tryLoadJobId());
   const [capturing, setCapturing] = useState(false);
+  const { handleGqlError } = useApolloErrorHandling(error);
+
+  const { handleSubmit, register, control, errors, getValues, setValue, formState } = useForm<Values>();
 
   useEffect(() => {
     const values = tryLoadValues();
@@ -74,7 +78,7 @@ const Index: React.FC = () => {
   const onSubmit = async (values: Values) => {
     const { data, errors } = await runAnounymouJob({ variables: { job: values } });
     if (!data || !data.runAnonymousJob) {
-      console.log(errors);
+      handleGqlError(errors);
       return;
     }
 
@@ -110,7 +114,7 @@ const Index: React.FC = () => {
           </Button>
         </Grid>
       </form>
-      {jobId && <JobProgress jobId={jobId} setLoading={setCapturing} />}
+      {jobId && <AnonymousJobProgress jobId={jobId} setLoading={setCapturing} />}
     </WideContent>
   );
 };

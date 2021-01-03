@@ -4,6 +4,7 @@ fragment siteFields on Site {
   url
   quality
   subsites
+  latestJobId
   viewports {
   ...viewportFields
   }

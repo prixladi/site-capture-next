@@ -16,6 +16,7 @@ import withAuthentication from '../../hoc/withAuthentication';
 import { useAuthorityManager } from '../../authority';
 import { templateOnCreateUpdate } from '../../services/mutationService';
 import { templateCreatedNotification } from '../../services/notificationService';
+import useApolloErrorHandling from '../../hooks/useApolloErrorHandling';
 
 type Values = {
   name: string;
@@ -24,10 +25,13 @@ type Values = {
 };
 
 const NewTemplate: React.FC = () => {
-  const [createTemplate] = useCreateTemplateMutation();
-  const { handleSubmit, register, control, errors, formState } = useForm<Values>();
+  const [createTemplate, { error }] = useCreateTemplateMutation();
+
   const manager = useAuthorityManager();
   const router = useRouter();
+  const { handleGqlError } = useApolloErrorHandling(error);
+
+  const { handleSubmit, register, control, errors, formState } = useForm<Values>();
 
   const onSubmit = async (values: Values): Promise<void> => {
     const { data, errors } = await createTemplate({
@@ -36,7 +40,7 @@ const NewTemplate: React.FC = () => {
     });
 
     if (!data) {
-      console.error(errors);
+      handleGqlError(errors);
       return;
     }
 

@@ -1,39 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Heading, Icon } from '@chakra-ui/react';
-import { useForm } from 'react-hook-form';
+import { Box, Flex, Grid, Heading } from '@chakra-ui/react';
 import Text from '../../components/Text';
-import QualitySlider from '../../components/QualitySlider';
-import UrlInput from '../../components/UrlInput';
-import Button from '../../components/Button';
-import ViewportInputs, { Viewport } from '../../components/ViewportInputs';
-import { useSiteLazyQuery, useUpdateSiteMutation } from '../../graphql';
-import { FaEdit } from 'react-icons/fa';
+import { useRunSiteJobMutation, useSiteLazyQuery, useUpdateSiteMutation } from '../../graphql';
 import { WideContent } from '../../components/Content';
-import NameInput from '../../components/NameInput';
-import SubsitesInput, { Subsite } from '../../components/SubsitesInput';
 import DefaultSkeleton from '../../components/DefaultSkeleton';
 import withAuthentication from '../../hoc/withAuthentication';
 import useRouteId from '../../hooks/useRouteId';
 import NotFound from '../404';
 import useApolloErrorHandling from '../../hooks/useApolloErrorHandling';
 import { siteUpdatedNotification } from '../../services/notificationService';
-
-type Values = {
-  url: string;
-  name: string;
-  quality: number;
-  viewports: Viewport[];
-  subsites: Subsite[];
-};
+import { JobProgress } from '../../components/jobProgress';
+import useCompactLayout from '../../hooks/useCompactLayout';
+import DeleteSiteButton from '../../components/sitePage/DeleteSiteButton';
+import ExtractTemplateButton from '../../components/sitePage/ExtractTemplateButton';
+import SiteForm, { Values } from '../../components/sitePage/SiteForm';
 
 const Site: React.FC = () => {
   const [updateSite] = useUpdateSiteMutation();
+  const [runSiteJob] = useRunSiteJobMutation();
+  const [fetch, { data, error, loading }] = useSiteLazyQuery();
+
   const [id, invalid] = useRouteId();
   const [notFound, setNotFound] = useState(false);
-  const [fetch, { data, error, loading }] = useSiteLazyQuery();
-  const { handleSubmit, register, control, errors, formState, setValue } = useForm<Values>();
-
-  useApolloErrorHandling(error);
+  const [capturing, setCapturing] = useState(false);
+  const [jobId, setJobId] = useState(null as string | null);
+  const { handleGqlError } = useApolloErrorHandling(error);
+  const isCompact = useCompactLayout();
+  const [deleted, setDeleted] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -42,25 +35,14 @@ const Site: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    if (data && data.me.site) {
-      const { name, url, quality, subsites, viewports } = data.me.site;
-
-      setValue('name', name);
-      setValue('url', url);
-      setValue('quality', quality);
-      setValue(
-        'subsites',
-        subsites.map((s) => ({ value: s })),
-      );
-      setValue('viewports', viewports);
-    }
-  }, [data]);
-
-  useEffect(() => {
     if (data && !data.me.site) {
       setNotFound(true);
     }
   }, [data, setNotFound]);
+
+  if (deleted) {
+    return <DefaultSkeleton />;
+  }
 
   if (notFound || invalid) {
     return <NotFound />;
@@ -70,7 +52,7 @@ const Site: React.FC = () => {
     return <DefaultSkeleton />;
   }
 
-  const onSubmit = async (values: Values) => {
+  const onSubmitUpdate = async (values: Values) => {
     const transformedValues = {
       ...values,
       subsites: values.subsites ? values.subsites.map((sub) => sub.value) : [],
@@ -78,40 +60,58 @@ const Site: React.FC = () => {
 
     const { data, errors } = await updateSite({ variables: { id: id as string, update: transformedValues } });
     if (!data) {
-      console.error(errors);
+      handleGqlError(errors);
     } else {
       siteUpdatedNotification();
     }
+
+    return !!data;
+  };
+
+  const onSubmitUpdateAndCapture = async (values: Values) => {
+    // update wasn't successful
+    if (!(await onSubmitUpdate(values))) {
+      return;
+    }
+
+    const { data, errors } = await runSiteJob({ variables: { id: id as string } });
+    if (!data) {
+      handleGqlError(errors);
+      return;
+    }
+
+    if (!data.site.runJob.id) {
+      console.error(`Error '${data.site.runJob.status}' while trying to run anonymouse job`);
+      return;
+    }
+
+    window.scrollTo(0, document.body.scrollHeight);
+    setJobId(data.site.runJob.id);
   };
 
   return (
     <WideContent>
-      <Box mb="2em">
-        <Heading as="h1" mb="0.5em">
-          Site {data.me.site.name}
-        </Heading>
-        <Text>Update existing site or run capture job.</Text>
-      </Box>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid gridGap="1em">
-          <NameInput errorMessage={errors.name?.message} register={register} />
-          <UrlInput errorMessage={errors.url?.message} register={register} />
-          <QualitySlider defaultQuality={data.me.site.quality} register={register} />
-          <SubsitesInput errors={errors.subsites} register={register} control={control} />
-          <ViewportInputs errors={errors.viewports} register={register} control={control} />
-          {formState.isDirty ? (
-            <Button submit isLoading={formState.isSubmitting || loading}>
-              <Icon mr="0.2em" as={FaEdit} />
-              Update site
-            </Button>
-          ) : (
-            <Button submit isLoading={formState.isSubmitting || loading}>
-              <Icon mr="0.2em" as={FaEdit} />
-              Capture site
-            </Button>
-          )}
+      <Flex display={['grid', 'flex', 'flex', 'flex']} justifyContent="space-between" mb="2em">
+        <Box maxW={['25em', '25em', '30em', '30em']} mb={isCompact ? '1em' : undefined}>
+          <Heading as="h1" mb="0.5em">
+            Site {data.me.site.name}
+          </Heading>
+          <Text>Update existing site or run capture job.</Text>
+        </Box>
+        <Grid gridGap="1.5em">
+          <DeleteSiteButton siteId={id as string} setDeleted={setDeleted} />
+          <ExtractTemplateButton site={data.me.site} />
         </Grid>
-      </form>
+      </Flex>
+      <SiteForm
+        capturing={capturing}
+        site={data.me.site}
+        loading={loading}
+        onSubmitUpdate={onSubmitUpdate}
+        onSubmitUpdateAndCapture={onSubmitUpdateAndCapture}
+        setJobId={setJobId}
+      />
+      {jobId && <JobProgress jobId={jobId} setLoading={setCapturing} />}
     </WideContent>
   );
 };

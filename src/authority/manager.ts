@@ -48,8 +48,9 @@ type Manager = {
   getTokens: () => utils.Tokens;
 };
 
-const createManager = (config: Config): Manager => {
+const createManager = (getConfig: () => Config): Manager => {
   const register = async function (model: NewUserModel, callbacks: Callbacks): Promise<Result<ErrorModel | void>> {
+    const config = getConfig();
     const validateStatus = any200(CONFLICT);
     const result = await api.post(
       `${_Users}`,
@@ -73,6 +74,7 @@ const createManager = (config: Config): Manager => {
   };
 
   const passwordLogin = async (model: PasswordLoginModel, callbacks: Callbacks): Promise<Result<void | EmailNotVerifiedModel>> => {
+    const config = getConfig();
     const validateStatus = any200(EMAIL_NOT_VERIFIED, BAD_REQUEST);
     const result = await api.post(`${_TokenPassword}`, model, {
       config,
@@ -97,6 +99,7 @@ const createManager = (config: Config): Manager => {
   };
 
   const googleLogin = async (model: GoogleLoginModel, callbacks: Callbacks): Promise<Result<void>> => {
+    const config = getConfig();
     const validateStatus = any200();
     const result = await api.post(`${_TokenGoogle}`, model, { config, ...callbacks, validateStatusCode: validateStatus });
 
@@ -109,6 +112,7 @@ const createManager = (config: Config): Manager => {
   };
 
   const sendForgottenPassword = async (email: string, callbacks: Callbacks): Promise<Result<void>> => {
+    const config = getConfig();
     const validateStatus = any200();
     const result = await api.patch(
       _EmailPasswordReset(email),
@@ -123,6 +127,7 @@ const createManager = (config: Config): Manager => {
   };
 
   const resetPassword = async (passwordToken: string, id: string, password: string, callbacks: Callbacks): Promise<Result<void>> => {
+    const config = getConfig();
     const validateStatus = any200(BAD_REQUEST, CONFLICT);
     const result = await api.patch(
       _UserPasswordReset(id),
@@ -137,6 +142,7 @@ const createManager = (config: Config): Manager => {
   };
 
   const sendAccountVerification = async (email: string, callbacks: Callbacks): Promise<Result<void>> => {
+    const config = getConfig();
     const validateStatus = any200(NOT_FOUND, CONFLICT);
     const result = await api.patch(
       _EmailVerification(email),
@@ -151,6 +157,7 @@ const createManager = (config: Config): Manager => {
   };
 
   const verifyAccount = async (email: string, token: string, callbacks: Callbacks): Promise<Result<void>> => {
+    const config = getConfig();
     const validateStatus = any200(BAD_REQUEST, NOT_FOUND, CONFLICT);
     const result = await api.put(_EmailVerified(email), { token }, { config, ...callbacks, validateStatusCode: validateStatus });
 
@@ -161,6 +168,7 @@ const createManager = (config: Config): Manager => {
   };
 
   const refreshToken = async (callbacks: Callbacks): Promise<boolean> => {
+    const config = getConfig();
     return await tryRefreshToken({ config, ...callbacks, validateStatusCode: () => true });
   };
 

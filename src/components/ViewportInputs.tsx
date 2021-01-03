@@ -92,9 +92,11 @@ const ViewPortInputs: React.FC<Props> = ({ register, control, errors }: Props) =
           />
         ))}
       </Grid>
-      <Flex justifyContent="center" mt="1em">
-        <PlusButton onClick={() => append({})} />
-      </Flex>
+      {fields.length < 6 && (
+        <Flex justifyContent="center" mt="1em">
+          <PlusButton onClick={() => append({})} />
+        </Flex>
+      )}
     </FormControl>
   );
 };

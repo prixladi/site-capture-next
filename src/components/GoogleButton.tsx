@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import GoogleLogin, { GoogleLoginResponse } from 'react-google-login';
 import { getGoogleConfig } from '../configs';
 import { defaultCallbacks, onSignIn } from '../services/authorityService';
@@ -11,10 +11,22 @@ type Props = {
 const GoogleButton: React.FC<Props> = ({ render }: Props) => {
   const { router, authManager, apollo } = useEssentials();
   const [isLoading, setIsLoading] = useState(false);
+  const [googleClientId, setGoogleClientId] = useState(null as string | null);
+
+  // Dont generate google button during SSG.
+  useEffect(() => {
+    if (!googleClientId) {
+      setGoogleClientId(getGoogleConfig().clientId);
+    }
+  }, [googleClientId, setGoogleClientId]);
+
+  if (!googleClientId) {
+    return null;
+  }
 
   return (
     <GoogleLogin
-      clientId={getGoogleConfig().clientId}
+      clientId={googleClientId}
       render={(props) => render({ isLoading, ...props })}
       onRequest={() => {
         setIsLoading(true);

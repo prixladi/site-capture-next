@@ -20,6 +20,7 @@ const trimName = (name: string): string => {
 
 const Templates: React.FC = () => {
   const { data, error } = useMeQuery();
+
   const router = useRouter();
   useApolloErrorHandling(error);
 
@@ -35,7 +36,7 @@ const Templates: React.FC = () => {
         </Heading>
         <Text>List of your predefined site templates. Click on concerete template to show detail or edit.</Text>
       </Box>
-      <Grid gridGap="1.5em">
+      <Grid gridGap="1em">
         <Button onClick={() => router.push(NewTemplateRoute)} minW="8em" fontSize="1.3em" colorScheme="yellow">
           Add new template <Icon ml="0.2em" as={FaPlus} />
         </Button>
@@ -52,7 +53,7 @@ const Templates: React.FC = () => {
                 </Tag>
               </Flex>
             </HStack>
-            <Divider />
+            <Divider mt="1em" />
           </Grid>
         ))}
       </Grid>

@@ -1,4 +1,4 @@
-import { ApolloClient } from '@apollo/client';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { NormalizedCacheObject } from '@apollo/client';
 import { Manager } from '../authority';
 import { isServer } from '../configs';
@@ -6,7 +6,19 @@ import createApolloClient from './createApolloClient';
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
+// Stub client for server SSG
+// If you want to use client on sever always initialize new instance with createApoloClient
+const serverClient = new ApolloClient({
+  ssrMode: true,
+  uri: '/graphql',
+  cache: new InMemoryCache(),
+});
+
 const initializeApolloClient = (authorityManager: Manager, initialState?: NormalizedCacheObject): ApolloClient<NormalizedCacheObject> => {
+  if (isServer) {
+    return serverClient;
+  }
+
   const _apolloClient =
     apolloClient ??
     createApolloClient(() => {
@@ -23,11 +35,6 @@ const initializeApolloClient = (authorityManager: Manager, initialState?: Normal
     // Restore the cache using the data passed from
     // getStaticProps/getServerSideProps combined with the existing cached data
     _apolloClient.cache.restore({ ...existingCache, ...initialState });
-  }
-
-  // For SSG and SSR always create a new Apollo Client
-  if (isServer) {
-    return _apolloClient;
   }
 
   // Create the Apollo Client once in the client

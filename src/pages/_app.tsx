@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from '../theme';
 import { AppProps } from 'next/app';
@@ -7,12 +7,11 @@ import { ApolloProvider } from '@apollo/client';
 import useApollo from '../apollo/useApollo';
 import Layout from '../components/Layout';
 import { useAuthority } from '../authority';
-import { getAuthApiConfig } from '../configs';
+import { getAuthApiConfig, isServer } from '../configs';
 import { AuthorityProvider } from '../authority';
 
 const App: React.FC<AppProps> = (props: AppProps): JSX.Element => {
-  const authApiConfig = useMemo(() => getAuthApiConfig(), [getAuthApiConfig]);
-  const manager = useAuthority(authApiConfig);
+  const manager = useAuthority(getAuthApiConfig);
   const apollo = useApollo(manager, props.pageProps.initialApolloState);
 
   return (

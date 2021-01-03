@@ -1,13 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Progress, Text, Link, Button, Flex, Icon } from '@chakra-ui/react';
-import { useAnonymousJobQuery } from '../graphql';
-import { getAnnonymousJobSubscriptionOptions } from '../services/subscriptionService';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-
-type Props = {
-  jobId: string;
-  setLoading: (loading: boolean) => void;
-};
 
 type ErrorMessageProps = {
   errorMessage?: string | null;
@@ -27,6 +20,17 @@ type ItemsProps = {
     status: boolean;
     errorMessage?: string | null;
   }[];
+};
+
+type DataDisplayProps = {
+  progress: number;
+  errorMessage?: string | null;
+  items: {
+    url: string;
+    status: boolean;
+    errorMessage?: string | null;
+  }[];
+  zipFileId?: string | null;
 };
 
 const infoTextSize = ['1em', '1em', '1em', '1em'];
@@ -76,16 +80,16 @@ const Items: React.FC<ItemsProps> = ({ items }: ItemsProps) => {
 
   return (
     <>
-      {items.map((item) => {
+      {items.map((item, index) => {
         if (item.status) {
           return (
-            <Text fontSize={infoTextSize} opacity="0.7" color="green.500" key={item.url}>
+            <Text fontSize={infoTextSize} opacity="0.7" color="green.500" key={index}>
               {item.url} <Icon ml="0.2em" mr="0.2em" as={FaCheck} />{' '}
             </Text>
           );
         } else {
           return (
-            <Text fontSize={infoTextSize} opacity="0.7" color="red.500" key={item.url}>
+            <Text fontSize={infoTextSize} opacity="0.7" color="red.500" key={index}>
               {item.url} <Icon ml="0.2em" mr="0.2em" as={FaTimes} /> {item.errorMessage}{' '}
             </Text>
           );
@@ -95,30 +99,7 @@ const Items: React.FC<ItemsProps> = ({ items }: ItemsProps) => {
   );
 };
 
-const JobProgress: React.FC<Props> = ({ jobId, setLoading }: Props) => {
-  const { loading, data, error, subscribeToMore } = useAnonymousJobQuery({ variables: { id: jobId }, errorPolicy: 'all' });
-
-  useEffect(() => {
-    const options = getAnnonymousJobSubscriptionOptions(jobId);
-    const unsubscribe = subscribeToMore(options);
-    return () => unsubscribe();
-  }, [jobId, subscribeToMore]);
-
-  useEffect(() => {
-    const isLoading = loading || !!error || !data || !data.anonymousJob || data.anonymousJob.progress < 100;
-    setLoading(isLoading);
-  }, [loading, data, error]);
-
-  if (!data) {
-    return null;
-  }
-
-  if (!data.anonymousJob) {
-    console.error('Error fetching anonymous job.', error);
-    return null;
-  }
-
-  const { progress, errorMessage, items, zipFileId } = data.anonymousJob;
+const DataDisplay: React.FC<DataDisplayProps> = ({ progress, errorMessage, items, zipFileId }: DataDisplayProps) => {
   const getColorScheme = () => {
     if (progress < 100) {
       return 'blue';
@@ -141,4 +122,4 @@ const JobProgress: React.FC<Props> = ({ jobId, setLoading }: Props) => {
   );
 };
 
-export default JobProgress;
+export default DataDisplay;

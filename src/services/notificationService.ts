@@ -44,8 +44,16 @@ const siteUpdatedNotification = (): void => {
   send({ description: 'Site has been successfuly updated.', status: 'success' });
 };
 
+const siteDeletedNotification = (): void => {
+  send({ description: 'Site has been successfuly deleted.', status: 'success' });
+};
+
 const templateUpdatedNotification = (): void => {
   send({ description: 'Template has been successfuly updated.', status: 'success' });
+};
+
+const templateRemovedNotification = (): void => {
+  send({ description: 'Template has been successfuly removed.', status: 'success' });
 };
 
 const loggedOutNotification = (): void => {
@@ -68,7 +76,9 @@ export {
   siteCreatedNotification,
   templateCreatedNotification,
   siteUpdatedNotification,
+  siteDeletedNotification,
   templateUpdatedNotification,
+  templateRemovedNotification,
   loggedOutNotification,
   loginExpiredNotification,
   loginNeededNotification,

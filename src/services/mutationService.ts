@@ -2,6 +2,7 @@ import { MutationUpdaterFn } from '@apollo/client';
 import {
   CreateSiteMutation,
   CreateTemplateMutation,
+  DeleteSiteMutation,
   MeDocument,
   MeQuery,
   SiteDocument,
@@ -46,6 +47,41 @@ const siteOnCreateUpdate = (userId?: string): MutationUpdaterFn<CreateSiteMutati
   }
 };
 
+const siteOnDeleteUpdate = (userId?: string): MutationUpdaterFn<DeleteSiteMutation> => (cache, result) => {
+  if (result.data) {
+    const oldMe = cache.readQuery<MeQuery>({ query: MeDocument });
+    if (oldMe) {
+      const newMe = {
+        ...oldMe,
+        me: {
+          ...oldMe.me,
+          sites: oldMe.me.sites.filter((site) => site.id !== result.data?.site.delete.id),
+        },
+      };
+
+      cache.writeQuery<MeQuery>({ query: MeDocument, data: newMe });
+    }
+
+    const oldDetail = cache.readQuery<SiteQuery>({ query: SiteDocument, variables: { id: result.data.site.delete.id } });
+    if (oldDetail && userId) {
+      const newDetail: SiteQuery = {
+        __typename: 'Query',
+        me: {
+          id: userId,
+          __typename: 'Me',
+          site: null,
+        },
+      };
+
+      cache.writeQuery<SiteQuery>({
+        query: SiteDocument,
+        variables: { id: result.data.site.delete.id },
+        data: newDetail,
+      });
+    }
+  }
+};
+
 const templateOnCreateUpdate = (userId?: string): MutationUpdaterFn<CreateTemplateMutation> => (cache, result) => {
   if (result.data) {
     const oldMe = cache.readQuery<MeQuery>({ query: MeDocument });
@@ -82,4 +118,4 @@ const templateOnCreateUpdate = (userId?: string): MutationUpdaterFn<CreateTempla
   }
 };
 
-export { siteOnCreateUpdate, templateOnCreateUpdate };
+export { siteOnCreateUpdate, templateOnCreateUpdate, siteOnDeleteUpdate };
