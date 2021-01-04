@@ -46,7 +46,7 @@ const Template: React.FC = () => {
     if (id) {
       fetch({ variables: { id } });
     }
-  }, [id]);
+  }, [id, fetch]);
 
   useEffect(() => {
     if (data && data.me.template) {
@@ -56,7 +56,7 @@ const Template: React.FC = () => {
       setValue('quality', quality);
       setValue('viewports', viewports);
     }
-  }, [data]);
+  }, [data, setValue]);
 
   useEffect(() => {
     if (data && !data.me.template) {

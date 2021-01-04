@@ -22,7 +22,7 @@ const withAuthentication = <TProps extends Record<string, string>>(Component: Re
       } else {
         onLoginExpired(authManager, router, apollo.apolloClient);
       }
-    }, [router, authManager, setSkeleton]);
+    }, [router, authManager, setSkeleton, apollo]);
 
     useEffect(() => {
       isMounted.current = true;

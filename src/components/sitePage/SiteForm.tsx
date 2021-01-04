@@ -55,6 +55,7 @@ const SiteForm: React.FC<Props> = ({ capturing, site, loading, setJobId, onSubmi
     if (latestJobId) {
       setJobId(latestJobId);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

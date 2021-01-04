@@ -32,7 +32,7 @@ const Site: React.FC = () => {
     if (id) {
       fetch({ variables: { id } });
     }
-  }, [id]);
+  }, [id, fetch]);
 
   useEffect(() => {
     if (data && !data.me.site) {

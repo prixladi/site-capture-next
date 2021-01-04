@@ -28,7 +28,7 @@ const JobProgress: React.FC<Props> = ({ jobId, setLoading }: Props) => {
   useEffect(() => {
     const isLoading = loading || !!error || !data || !data.me.job || data.me.job.progress < 100;
     setLoading(isLoading);
-  }, [loading, data, error]);
+  }, [loading, data, error, setLoading]);
 
   if (!data) {
     return null;
@@ -55,7 +55,7 @@ const AnonymousJobProgress: React.FC<AnonymousProps> = ({ jobId, setLoading, onN
   useEffect(() => {
     const isLoading = loading || !!error || !data || (!!data.anonymousJob && data.anonymousJob.progress < 100);
     setLoading(isLoading);
-  }, [loading, data, error]);
+  }, [loading, data, error, setLoading]);
 
   useEffect(() => {
     if (!!data && !data.anonymousJob) {
@@ -63,7 +63,7 @@ const AnonymousJobProgress: React.FC<AnonymousProps> = ({ jobId, setLoading, onN
       setLoading(false);
       console.error(`Anonymous job with id ${jobId} was not found.`); 
     }
-  }, [data]);
+  }, [data, setLoading, jobId, onNotFound]);
 
   if (!data) {
     return null;

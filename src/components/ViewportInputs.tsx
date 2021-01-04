@@ -74,7 +74,7 @@ const ViewPortInputs: React.FC<Props> = ({ register, control, errors }: Props) =
     if (fields.length === 0) {
       append({});
     }
-  }, [fields]);
+  }, [fields, append]);
 
   return (
     <FormControl isRequired>

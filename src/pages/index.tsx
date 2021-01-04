@@ -85,7 +85,7 @@ const Index: React.FC = () => {
         setValue('viewports', values.viewports);
       }
     }
-  }, [setValue, tryLoadValues]);
+  }, [setValue]);
 
   const onSubmit = async (values: Values) => {
     const { data, errors } = await runAnounymouJob({ variables: { job: values } });
@@ -102,6 +102,11 @@ const Index: React.FC = () => {
     window.scrollTo(0, document.body.scrollHeight);
     saveValues(getValues());
     saveJobId(data.runAnonymousJob.id, setJobId);
+  };
+
+  const onNotFound = () => {
+    clearJobId();
+    setJobId(null);
   };
 
   return (
@@ -126,16 +131,7 @@ const Index: React.FC = () => {
           </Button>
         </Grid>
       </form>
-      {jobId && (
-        <AnonymousJobProgress
-          onNotFound={() => {
-            clearJobId();
-            setJobId(null);
-          }}
-          jobId={jobId}
-          setLoading={setCapturing}
-        />
-      )}
+      {jobId && <AnonymousJobProgress onNotFound={onNotFound} jobId={jobId} setLoading={setCapturing} />}
     </WideContent>
   );
 };
