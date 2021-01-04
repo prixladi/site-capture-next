@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Grid, Heading, Icon } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import Text from '../components/Text';
-import QualitySlider from '../components/QualitySlider';
+import QualitySlider, { ForcedQuality } from '../components/QualitySlider';
 import UrlInput from '../components/UrlInput';
 import Button from '../components/Button';
 import ViewportInputs, { Viewport } from '../components/ViewportInputs';
@@ -67,6 +67,7 @@ const Index: React.FC = () => {
   const [jobId, setJobId] = useState(tryLoadJobId());
   const [capturing, setCapturing] = useState(false);
   const { handleGqlError } = useApolloErrorHandling(error);
+  const [forcedQuality, setForcedQuality] = useState(null as ForcedQuality | null);
 
   const { handleSubmit, register, control, errors, getValues, setValue, formState } = useForm<Values>({ defaultValues });
 
@@ -78,6 +79,7 @@ const Index: React.FC = () => {
       }
       if (values.quality) {
         setValue('quality', values.quality);
+        setForcedQuality({ value: values.quality });
       }
       if (values.viewports) {
         setValue('viewports', values.viewports);
@@ -116,7 +118,7 @@ const Index: React.FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid gridGap="1em">
           <UrlInput errorMessage={errors.url?.message} register={register} />
-          <QualitySlider register={register} />
+          <QualitySlider forcedQuality={forcedQuality} register={register} />
           <ViewportInputs errors={errors.viewports} register={register} control={control} />
           <Button submit isLoading={capturing || formState.isSubmitting}>
             <Icon mr="0.2em" as={FaCamera} />
@@ -126,8 +128,9 @@ const Index: React.FC = () => {
       </form>
       {jobId && (
         <AnonymousJobProgress
-          notFound={() => {
-            clearJobId(), setJobId(null);
+          onNotFound={() => {
+            clearJobId();
+            setJobId(null);
           }}
           jobId={jobId}
           setLoading={setCapturing}

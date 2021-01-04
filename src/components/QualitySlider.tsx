@@ -2,23 +2,27 @@ import React, { Ref, useEffect, useState } from 'react';
 import { Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, FormControl, FormLabel } from '@chakra-ui/react';
 import { RegisterOptions } from 'react-hook-form';
 
+type ForcedQuality = {
+  value: number;
+};
+
 type Props = {
   register: (rules?: RegisterOptions) => Ref<HTMLInputElement>;
   defaultQuality?: number;
-  quality?: number | null;
+  forcedQuality?: ForcedQuality | null;
 };
 
 const _defaultQuality = 100;
 
-const QualitySlider: React.FC<Props> = ({ register, defaultQuality, quality }: Props) => {
-  const [value, setValue] = useState(defaultQuality ?? _defaultQuality);
+const QualitySlider: React.FC<Props> = ({ register, defaultQuality, forcedQuality }: Props) => {
+  const [value, setValue] = useState(_defaultQuality);
   //const {actions, state} = useSlider({min: 1, max: 100, value: value });
 
   useEffect(() => {
-    if (quality) {
-      setValue(quality);
+    if (forcedQuality) {
+      setValue(forcedQuality.value);
     }
-  }, [quality, setValue]);
+  }, [forcedQuality, setValue]);
 
   return (
     <FormControl id="quality" isRequired>
@@ -45,4 +49,5 @@ const QualitySlider: React.FC<Props> = ({ register, defaultQuality, quality }: P
   );
 };
 
+export type { ForcedQuality };
 export default QualitySlider;

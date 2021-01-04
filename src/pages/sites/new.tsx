@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Flex, Grid, Heading, Icon } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import Text from '../../components/Text';
-import QualitySlider from '../../components/QualitySlider';
+import QualitySlider, { ForcedQuality } from '../../components/QualitySlider';
 import UrlInput from '../../components/UrlInput';
 import Button from '../../components/Button';
 import ViewportInputs, { Viewport } from '../../components/ViewportInputs';
@@ -45,14 +45,14 @@ const NewSite: React.FC = () => {
   const router = useRouter();
   const { handleGqlError } = useApolloErrorHandling(error);
   const isCompact = useCompactLayout();
-  const [quality, setQuality] = useState(null as number | null);
+  const [forcedQuality, setForcedQuality] = useState(null as ForcedQuality | null);
 
   const { handleSubmit, register, control, errors, setValue, formState } = useForm<Values>({ defaultValues });
 
   const fillFromTemplate = (template: TemplateFieldsFragment) => {
     setValue('quality', template.quality);
     setValue('viewports', template.viewports);
-    setQuality(template.quality);
+    setForcedQuality({ value: template.quality });
   };
 
   const onSubmit = async (values: Values) => {
@@ -92,7 +92,7 @@ const NewSite: React.FC = () => {
         <Grid gridGap="1em">
           <NameInput errorMessage={errors.name?.message} register={register} />
           <UrlInput errorMessage={errors.url?.message} register={register} />
-          <QualitySlider quality={quality} register={register} />
+          <QualitySlider forcedQuality={forcedQuality} register={register} />
           <SubsitesInput errors={errors.subsites} register={register} control={control} />
           <ViewportInputs errors={errors.viewports} register={register} control={control} />
           <Button submit isLoading={formState.isSubmitting}>
