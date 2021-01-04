@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { NewSiteRoute, SiteRoute } from '../../routes';
 import DefaultSkeleton from '../../components/DefaultSkeleton';
 import useApolloErrorHandling from '../../hooks/useApolloErrorHandling';
+import ListItemHeading from '../../components/ListItemHeading';
 
 const trimUrl = (url: string): string => {
   if (url.length < 50) {
@@ -17,14 +18,6 @@ const trimUrl = (url: string): string => {
   }
 
   return `${url.substring(0, 47)}...`;
-};
-
-const trimName = (name: string): string => {
-  if (name.length < 20) {
-    return name;
-  }
-
-  return `${name.substring(0, 17)}...`;
 };
 
 const Sites: React.FC = () => {
@@ -52,9 +45,7 @@ const Sites: React.FC = () => {
         <Divider />
         {data.me.sites.map((site) => (
           <Grid key={site.id} gridGap="0.5em">
-            <Heading onClick={() => router.push(SiteRoute(site.id))} cursor="pointer" as="h2">
-              {trimName(site.name)}
-            </Heading>
+            <ListItemHeading onClick={() => router.push(SiteRoute(site.id))} name={site.name} />
             <Flex gridGap="0.5em">
               <Tag fontSize="0.8em" colorScheme="blue">
                 {site.viewports.length} Viewports

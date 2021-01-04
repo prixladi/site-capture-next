@@ -6,7 +6,7 @@ import UrlInput from '../UrlInput';
 import Button from '../Button';
 import ViewportInputs, { Viewport } from '../ViewportInputs';
 import { SiteFieldsFragment } from '../../graphql';
-import { FaEdit } from 'react-icons/fa';
+import { FaCamera, FaEdit } from 'react-icons/fa';
 import NameInput from '../NameInput';
 import SubsitesInput, { Subsite } from '../SubsitesInput';
 import useCompactLayout from '../../hooks/useCompactLayout';
@@ -24,13 +24,21 @@ type Props = {
   site: SiteFieldsFragment;
   loading: boolean;
   onSubmitUpdate: (values: Values) => Promise<unknown>;
-  onSubmitUpdateAndCapture: (values: Values) => Promise<unknown>;
+  onSubmitCapture: () => Promise<unknown>;
   setJobId: (value: string) => void;
 };
 
-const SiteForm: React.FC<Props> = ({ capturing, site, loading, setJobId, onSubmitUpdate, onSubmitUpdateAndCapture }: Props) => {
+const defaultValues: Values = {
+  url: '',
+  name: '',
+  quality: 100,
+  viewports: [],
+  subsites: [],
+};
+
+const SiteForm: React.FC<Props> = ({ capturing, site, loading, setJobId, onSubmitUpdate, onSubmitCapture }: Props) => {
   const isCompact = useCompactLayout();
-  const { handleSubmit, register, control, errors, formState, setValue, getValues } = useForm<Values>();
+  const { handleSubmit, register, control, errors, formState, setValue } = useForm<Values>({ defaultValues });
 
   useEffect(() => {
     const { name, url, quality, subsites, viewports, latestJobId } = site;
@@ -58,19 +66,13 @@ const SiteForm: React.FC<Props> = ({ capturing, site, loading, setJobId, onSubmi
         <SubsitesInput errors={errors.subsites} register={register} control={control} />
         <ViewportInputs errors={errors.viewports} register={register} control={control} />
         <Flex display={isCompact ? 'grid' : 'flex'} justifyContent="center" gridGap="1.5em">
-          <Button
-            onClick={async () => {
-              console.log('aaa');
-            }}
-            submit
-            isLoading={formState.isSubmitting || loading || capturing}
-          >
+          <Button submit isLoading={formState.isSubmitting || loading || capturing}>
             <Icon mr="0.2em" as={FaEdit} />
             Update site
           </Button>
-          <Button onClick={() => onSubmitUpdateAndCapture(getValues())} isLoading={formState.isSubmitting || loading || capturing}>
-            <Icon mr="0.2em" as={FaEdit} />
-            Update {'&'} Capture site
+          <Button onClick={onSubmitCapture} isLoading={formState.isSubmitting || loading || capturing}>
+            <Icon mr="0.2em" as={FaCamera} />
+            Capture site
           </Button>
         </Flex>
       </Grid>

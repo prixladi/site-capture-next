@@ -3,6 +3,7 @@ import {
   CreateSiteMutation,
   CreateTemplateMutation,
   DeleteSiteMutation,
+  DeleteTemplateMutation,
   MeDocument,
   MeQuery,
   SiteDocument,
@@ -118,4 +119,39 @@ const templateOnCreateUpdate = (userId?: string): MutationUpdaterFn<CreateTempla
   }
 };
 
-export { siteOnCreateUpdate, templateOnCreateUpdate, siteOnDeleteUpdate };
+const templateOnDeleteUpdate = (userId?: string): MutationUpdaterFn<DeleteTemplateMutation> => (cache, result) => {
+  if (result.data) {
+    const oldMe = cache.readQuery<MeQuery>({ query: MeDocument });
+    if (oldMe) {
+      const newMe = {
+        ...oldMe,
+        me: {
+          ...oldMe.me,
+          templates: oldMe.me.templates.filter((template) => template.id !== result.data?.template.delete.id),
+        },
+      };
+
+      cache.writeQuery<MeQuery>({ query: MeDocument, data: newMe });
+    }
+
+    const oldDetail = cache.readQuery<TemplateQuery>({ query: TemplateDocument, variables: { id: result.data.template.delete.id } });
+    if (oldDetail && userId) {
+      const newDetail: TemplateQuery = {
+        __typename: 'Query',
+        me: {
+          id: userId,
+          __typename: 'Me',
+          template: null,
+        },
+      };
+
+      cache.writeQuery<TemplateQuery>({
+        query: TemplateDocument,
+        variables: { id: result.data.template.delete.id },
+        data: newDetail,
+      });
+    }
+  }
+};
+
+export { siteOnCreateUpdate, templateOnCreateUpdate, siteOnDeleteUpdate, templateOnDeleteUpdate };

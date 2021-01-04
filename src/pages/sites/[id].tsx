@@ -68,12 +68,7 @@ const Site: React.FC = () => {
     return !!data;
   };
 
-  const onSubmitUpdateAndCapture = async (values: Values) => {
-    // update wasn't successful
-    if (!(await onSubmitUpdate(values))) {
-      return;
-    }
-
+  const onSubmitCapture = async () => {
     const { data, errors } = await runSiteJob({ variables: { id: id as string } });
     if (!data) {
       handleGqlError(errors);
@@ -91,7 +86,7 @@ const Site: React.FC = () => {
 
   return (
     <WideContent>
-      <Flex display={['grid', 'flex', 'flex', 'flex']} justifyContent="space-between" mb="2em">
+      <Flex display={['grid', 'flex', 'flex', 'flex']} gridGap="1em" justifyContent="space-between" mb="2em">
         <Box maxW={['25em', '25em', '30em', '30em']} mb={isCompact ? '1em' : undefined}>
           <Heading as="h1" mb="0.5em">
             Site {data.me.site.name}
@@ -108,7 +103,7 @@ const Site: React.FC = () => {
         site={data.me.site}
         loading={loading}
         onSubmitUpdate={onSubmitUpdate}
-        onSubmitUpdateAndCapture={onSubmitUpdateAndCapture}
+        onSubmitCapture={onSubmitCapture}
         setJobId={setJobId}
       />
       {jobId && <JobProgress jobId={jobId} setLoading={setCapturing} />}

@@ -15,7 +15,6 @@ import { Config } from './config';
 import * as utils from './utils';
 
 const { BAD_REQUEST, NOT_FOUND, CONFLICT } = StatusCodes;
-const EMAIL_NOT_VERIFIED = 430;
 
 const any200 = (...additionCodes: number[]) => (status: number) => {
   const valid = status >= 200 && status < 300;
@@ -75,7 +74,7 @@ const createManager = (getConfig: () => Config): Manager => {
 
   const passwordLogin = async (model: PasswordLoginModel, callbacks: Callbacks): Promise<Result<void | EmailNotVerifiedModel>> => {
     const config = getConfig();
-    const validateStatus = any200(EMAIL_NOT_VERIFIED, BAD_REQUEST);
+    const validateStatus = any200(BAD_REQUEST);
     const result = await api.post(`${_TokenPassword}`, model, {
       config,
       ...callbacks,
@@ -85,14 +84,6 @@ const createManager = (getConfig: () => Config): Manager => {
     if (result?.ok) {
       const tokens = (await result?.json()) as TokensModel;
       setTokens(tokens);
-    }
-
-    if (result?.status === EMAIL_NOT_VERIFIED) {
-      return {
-        ok: result?.ok ?? false,
-        status: result?.status,
-        data: (await result.json()) as EmailNotVerifiedModel,
-      };
     }
 
     return { ok: result?.ok ?? false, status: result?.status };

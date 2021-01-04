@@ -1,12 +1,12 @@
-import React from 'react';
-import { Box, Grid, Heading, Icon } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Box, Flex, Grid, Heading, Icon } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import Text from '../../components/Text';
 import QualitySlider from '../../components/QualitySlider';
 import UrlInput from '../../components/UrlInput';
 import Button from '../../components/Button';
 import ViewportInputs, { Viewport } from '../../components/ViewportInputs';
-import { useCreateSiteMutation } from '../../graphql';
+import { TemplateFieldsFragment, useCreateSiteMutation } from '../../graphql';
 import { SiteRoute } from '../../routes';
 import { FaPlus } from 'react-icons/fa';
 import { WideContent } from '../../components/Content';
@@ -17,8 +17,10 @@ import DefaultSkeleton from '../../components/DefaultSkeleton';
 import withAuthentication from '../../hoc/withAuthentication';
 import { useAuthorityManager } from '../../authority';
 import { siteOnCreateUpdate } from '../../services/mutationService';
-import { apiServerErrorNotification, siteCreatedNotification } from '../../services/notificationService';
+import { siteCreatedNotification } from '../../services/notificationService';
 import useApolloErrorHandling from '../../hooks/useApolloErrorHandling';
+import SelectTemplate from '../../components/templatePage/SelectTemplate';
+import useCompactLayout from '../../hooks/useCompactLayout';
 
 type Values = {
   url: string;
@@ -28,14 +30,30 @@ type Values = {
   subsites: Subsite[];
 };
 
+const defaultValues: Values = {
+  url: '',
+  name: '',
+  quality: 100,
+  viewports: [],
+  subsites: [],
+};
+
 const NewSite: React.FC = () => {
   const [createSite, { error }] = useCreateSiteMutation();
 
   const manager = useAuthorityManager();
   const router = useRouter();
   const { handleGqlError } = useApolloErrorHandling(error);
+  const isCompact = useCompactLayout();
+  const [quality, setQuality] = useState(null as number | null);
 
-  const { handleSubmit, register, control, errors, formState } = useForm<Values>();
+  const { handleSubmit, register, control, errors, setValue, formState } = useForm<Values>({ defaultValues });
+
+  const fillFromTemplate = (template: TemplateFieldsFragment) => {
+    setValue('quality', template.quality);
+    setValue('viewports', template.viewports);
+    setQuality(template.quality);
+  };
 
   const onSubmit = async (values: Values) => {
     const transformedValues = {
@@ -59,17 +77,22 @@ const NewSite: React.FC = () => {
 
   return (
     <WideContent>
-      <Box mb="2em">
-        <Heading as="h1" mb="0.5em">
-          New Site
-        </Heading>
-        <Text>Create new site that you can later reuse.</Text>
-      </Box>
+      <Flex display={['grid', 'flex', 'flex', 'flex']} gridGap="1em" justifyContent="space-between" mb="2em">
+        <Box maxW={['25em', '25em', '30em', '30em']} mb={isCompact ? '1em' : undefined}>
+          <Heading as="h1" mb="0.5em">
+            New Site
+          </Heading>
+          <Text>Create new site that you can later reuse.</Text>
+        </Box>
+        <Grid gridGap="1.5em">
+          <SelectTemplate fillFromTemplate={fillFromTemplate} />
+        </Grid>
+      </Flex>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid gridGap="1em">
           <NameInput errorMessage={errors.name?.message} register={register} />
           <UrlInput errorMessage={errors.url?.message} register={register} />
-          <QualitySlider register={register} />
+          <QualitySlider quality={quality} register={register} />
           <SubsitesInput errors={errors.subsites} register={register} control={control} />
           <ViewportInputs errors={errors.viewports} register={register} control={control} />
           <Button submit isLoading={formState.isSubmitting}>

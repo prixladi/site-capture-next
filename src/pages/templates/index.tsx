@@ -9,14 +9,7 @@ import { useRouter } from 'next/router';
 import { NewTemplateRoute, TemplateRoute } from '../../routes';
 import DefaultSkeleton from '../../components/DefaultSkeleton';
 import useApolloErrorHandling from '../../hooks/useApolloErrorHandling';
-
-const trimName = (name: string): string => {
-  if (name.length < 20) {
-    return name;
-  }
-
-  return `${name.substring(0, 17)}...`;
-};
+import ListItemHeading from '../../components/ListItemHeading';
 
 const Templates: React.FC = () => {
   const { data, error } = useMeQuery();
@@ -44,9 +37,7 @@ const Templates: React.FC = () => {
         {data.me.templates.map((template) => (
           <Grid key={template.id} gridGap="0.5em">
             <HStack gridGap="0.5em">
-              <Heading onClick={() => router.push(TemplateRoute(template.id))} cursor="pointer" as="h2">
-                {trimName(template.name)}
-              </Heading>
+              <ListItemHeading onClick={() => router.push(TemplateRoute(template.id))} name={template.name} />
               <Flex gridGap="0.5em">
                 <Tag fontSize="0.8em" colorScheme="blue">
                   {template.viewports.length} Viewports

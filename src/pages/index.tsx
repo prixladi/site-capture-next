@@ -21,6 +21,12 @@ type Values = {
   viewports: Viewport[];
 };
 
+const defaultValues: Values = {
+  url: '',
+  quality: 100,
+  viewports: [],
+};
+
 const tryLoadJobId = (): string | null => {
   if (!isServer) {
     return localStorage.getItem('anonymousJobId');
@@ -34,6 +40,10 @@ const saveJobId = (jobId: string, setJobId: (jobId: string) => void): void => {
     localStorage.setItem('anonymousJobId', jobId);
     setJobId(jobId);
   }
+};
+
+const clearJobId = (): void => {
+  localStorage.removeItem('anonymousJobId');
 };
 
 const saveValues = (values: Values): void => {
@@ -58,7 +68,7 @@ const Index: React.FC = () => {
   const [capturing, setCapturing] = useState(false);
   const { handleGqlError } = useApolloErrorHandling(error);
 
-  const { handleSubmit, register, control, errors, getValues, setValue, formState } = useForm<Values>();
+  const { handleSubmit, register, control, errors, getValues, setValue, formState } = useForm<Values>({ defaultValues });
 
   useEffect(() => {
     const values = tryLoadValues();
@@ -114,7 +124,15 @@ const Index: React.FC = () => {
           </Button>
         </Grid>
       </form>
-      {jobId && <AnonymousJobProgress jobId={jobId} setLoading={setCapturing} />}
+      {jobId && (
+        <AnonymousJobProgress
+          notFound={() => {
+            clearJobId(), setJobId(null);
+          }}
+          jobId={jobId}
+          setLoading={setCapturing}
+        />
+      )}
     </WideContent>
   );
 };

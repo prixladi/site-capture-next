@@ -9,6 +9,12 @@ type Props = {
   setLoading: (loading: boolean) => void;
 };
 
+type AnonymousProps = {
+  jobId: string;
+  setLoading: (loading: boolean) => void;
+  notFound: () => void;
+};
+
 const JobProgress: React.FC<Props> = ({ jobId, setLoading }: Props) => {
   const { loading, data, error, subscribeToMore } = useJobQuery({ variables: { id: jobId } });
   useApolloErrorHandling(error);
@@ -36,7 +42,7 @@ const JobProgress: React.FC<Props> = ({ jobId, setLoading }: Props) => {
   return <DataDisplay {...data.me.job} />;
 };
 
-const AnonymousJobProgress: React.FC<Props> = ({ jobId, setLoading }: Props) => {
+const AnonymousJobProgress: React.FC<AnonymousProps> = ({ jobId, setLoading, notFound }: AnonymousProps) => {
   const { loading, data, error, subscribeToMore } = useAnonymousJobQuery({ variables: { id: jobId } });
   useApolloErrorHandling(error);
 
@@ -56,6 +62,8 @@ const AnonymousJobProgress: React.FC<Props> = ({ jobId, setLoading }: Props) => 
   }
 
   if (!data.anonymousJob) {
+    notFound();
+    setLoading(false);
     console.error(`Anonymous job with id ${jobId} was not found.`);
     return null;
   }

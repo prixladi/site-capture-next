@@ -1,5 +1,6 @@
 import { ApolloClient } from '@apollo/client';
 import { NextRouter } from 'next/dist/client/router';
+import { Apollo } from '../apollo/createApolloClient';
 import { Callbacks, Manager } from '../authority';
 import { HomeRoute, AuthRoute } from '../routes';
 import { authServerErrorNotification, loggedInNotification, loggedOutNotification, loginExpiredNotification } from './notificationService';
@@ -15,9 +16,10 @@ const defaultCallbacks = (router: NextRouter): Callbacks => ({
   },
 });
 
-const onSignIn = async (router: NextRouter, apollo: ApolloClient<unknown>): Promise<void> => {
+const onSignIn = async (router: NextRouter, { subscriptionClient, apolloClient }: Apollo): Promise<void> => {
   loggedInNotification();
-  await apollo.cache.reset();
+  subscriptionClient.close(true);
+  await apolloClient.cache.reset();
   await router.push(HomeRoute);
 };
 

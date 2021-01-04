@@ -13,19 +13,19 @@ import { useRouter } from 'next/router';
 import React, { useRef, useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
 import { useAuthorityManager } from '../../authority';
-import { useDeleteSiteMutation } from '../../graphql';
+import { useDeleteTemplateMutation } from '../../graphql';
 import useApolloErrorHandling from '../../hooks/useApolloErrorHandling';
-import { SitesRoute } from '../../routes';
-import { siteOnDeleteUpdate } from '../../services/mutationService';
-import { siteDeletedNotification } from '../../services/notificationService';
+import { TemplatesRoute } from '../../routes';
+import { templateOnDeleteUpdate } from '../../services/mutationService';
+import { templateRemovedNotification } from '../../services/notificationService';
 
 type Props = {
-  siteId: string;
+  templateId: string;
   setDeleted: (value: boolean) => void;
 };
 
-const DeleteSiteButton: React.FC<Props> = ({ siteId, setDeleted }: Props) => {
-  const [deleteSite, { error }] = useDeleteSiteMutation();
+const DeleteTemplateButton: React.FC<Props> = ({ templateId, setDeleted }: Props) => {
+  const [deleteTemplate, { error }] = useDeleteTemplateMutation();
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -38,9 +38,9 @@ const DeleteSiteButton: React.FC<Props> = ({ siteId, setDeleted }: Props) => {
   const onDelete = async () => {
     setLoading(true);
     setDeleted(true);
-    const { errors } = await deleteSite({
-      variables: { id: siteId },
-      update: siteOnDeleteUpdate(manager.getUserProfile()?.id),
+    const { errors } = await deleteTemplate({
+      variables: { id: templateId },
+      update: templateOnDeleteUpdate(manager.getUserProfile()?.id),
     });
 
     if (errors) {
@@ -50,21 +50,22 @@ const DeleteSiteButton: React.FC<Props> = ({ siteId, setDeleted }: Props) => {
     }
 
     setLoading(false);
-    siteDeletedNotification();
-    await router.push(SitesRoute);
+    templateRemovedNotification();
+    await router.push(TemplatesRoute);
   };
 
   return (
     <Box>
       <Button isLoading={loading} onClick={() => setIsOpen(true)} maxW="11em" minW="11em" colorScheme="blue" fontSize="1.3em">
-        <Icon mr="0.2em" as={FaTrash} /> Delete Site
+        <Icon mr="0.2em" as={FaTrash} />
+        Delete Template
       </Button>
 
       <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Site
+              Delete Template
             </AlertDialogHeader>
 
             <AlertDialogBody>Are you sure? You can{"'"}t undo this action afterwards.</AlertDialogBody>
@@ -91,4 +92,4 @@ const DeleteSiteButton: React.FC<Props> = ({ siteId, setDeleted }: Props) => {
   );
 };
 
-export default DeleteSiteButton;
+export default DeleteTemplateButton;

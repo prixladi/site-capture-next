@@ -1,5 +1,4 @@
 import { Button, Icon } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { FaMap } from 'react-icons/fa';
 import { useAuthorityManager } from '../../authority';
@@ -24,9 +23,9 @@ const DeleteSiteButton: React.FC<Props> = ({ site }: Props) => {
     const { errors } = await createTemplate({
       variables: {
         template: {
-          name: 't1',
-          viewports: site.viewports.map((vp) => ({ width: vp.width, height: vp.height })),
+          name: site.name,
           quality: site.quality,
+          viewports: site.viewports.map((vp) => ({ width: vp.width, height: vp.height })),
         },
       },
       update: templateOnCreateUpdate(manager.getUserProfile()?.id),
@@ -42,7 +41,7 @@ const DeleteSiteButton: React.FC<Props> = ({ site }: Props) => {
   };
 
   return (
-    <Button isLoading={loading} maxW="10em" onClick={onExtractTemplate} minW="8em" colorScheme="blue" fontSize="1.3em">
+    <Button isLoading={loading} onClick={onExtractTemplate} maxW="11em" minW="11em" colorScheme="blue" fontSize="1.3em">
       <Icon mr="0.2em" as={FaMap} /> Extract template
     </Button>
   );

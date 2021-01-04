@@ -16,7 +16,7 @@ const getAnnonymousJobSubscriptionOptions = (id: string): AnonymousJobOptions =>
         return prev;
       }
 
-      const { item, __typename: _, ...jobUpdatedRest } = subscriptionData.data.jobUpdated;
+      const { item, ...jobUpdatedRest } = subscriptionData.data.jobUpdated;
 
       const getItems = () => {
         if (!anonymousJob?.items) {
@@ -57,7 +57,7 @@ const getJobSubscriptionOptions = (id: string): JobOptions => {
         return prev;
       }
 
-      const { item, __typename: _, ...jobUpdatedRest } = subscriptionData.data.jobUpdated;
+      const { item, ...jobUpdatedRest } = subscriptionData.data.jobUpdated;
 
       const getItems = () => {
         if (!job?.items) {

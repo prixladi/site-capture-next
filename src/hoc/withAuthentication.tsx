@@ -20,7 +20,7 @@ const withAuthentication = <TProps extends Record<string, string>>(Component: Re
           setSkeleton(false);
         }
       } else {
-        onLoginExpired(authManager, router, apollo);
+        onLoginExpired(authManager, router, apollo.apolloClient);
       }
     }, [router, authManager, setSkeleton]);
 

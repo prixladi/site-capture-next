@@ -24,6 +24,12 @@ type Values = {
   viewports: Viewport[];
 };
 
+const defaultValues: Values = {
+  name: '',
+  quality: 100,
+  viewports: [],
+};
+
 const NewTemplate: React.FC = () => {
   const [createTemplate, { error }] = useCreateTemplateMutation();
 
@@ -31,7 +37,7 @@ const NewTemplate: React.FC = () => {
   const router = useRouter();
   const { handleGqlError } = useApolloErrorHandling(error);
 
-  const { handleSubmit, register, control, errors, formState } = useForm<Values>();
+  const { handleSubmit, register, control, errors, formState } = useForm<Values>({ defaultValues });
 
   const onSubmit = async (values: Values): Promise<void> => {
     const { data, errors } = await createTemplate({

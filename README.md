@@ -1,23 +1,31 @@
-# Example app with [chakra-ui](https://github.com/chakra-ui/chakra-ui)
+# Site Capture Next
 
-This example features how to use [chakra-ui](https://github.com/chakra-ui/chakra-ui) as the component library within a Next.js app.
+Frontend for [Site Capture](https://github.com/prixladi/site-capture) project.<br />
+For everything to function properly should be run together with [Backend](https://github.com/prixladi/site-capture-server).
 
-We are connecting the Next.js `_app.js` with `chakra-ui`'s Theme and ColorMode containers so the pages can have app-wide dark/light mode. We are also creating some components which shows the usage of `chakra-ui`'s style props.
+## Yarn
 
-## Deploy your own
+When using **Yarn** keep in mind that you need to run additional services for the app to function properly. You can use docker as described below. If you decide to use another method you will probably need to change the default configuration.
 
-Deploy the example using [Vercel](https://vercel.com):
+### `yarn dev`
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/vercel/next.js/tree/canary/examples/with-chakra-ui)
+Runs the app in the development mode.<br />
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-## How to use
+The page will reload if you make edits.<br />
+You will also see some lint errors in the console.
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+### `yarn build`
 
-```bash
-npx create-next-app --example with-chakra-ui with-chakra-ui-app
-# or
-yarn create next-app --example with-chakra-ui with-chakra-ui-app
-```
+Builds the app for production, including prerendering SSG-ready pages.<br />
+The App is ready to be deployed!
 
-Deploy it to the cloud with [Vercel](https://vercel.com/import?filter=next.js&utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+## Docker
+
+### `docker build .`
+
+Builds a production-ready image.
+
+### `docker-compose up`
+
+Runs app container and other containers (**MongoDB, Redis, Authorization  Service, Site Capture Server, etc...**) and builds app image if does not exist.
