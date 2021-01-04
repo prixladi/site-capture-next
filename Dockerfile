@@ -4,7 +4,6 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn
 COPY . .
-RUN rm .env.local
 RUN yarn build
 
 RUN apk update && apk add dos2unix
