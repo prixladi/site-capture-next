@@ -56,7 +56,6 @@ export type Query = {
   me: Me;
 };
 
-
 export type QueryAnonymousJobArgs = {
   id: Scalars['ID'];
 };
@@ -71,7 +70,6 @@ export type Mutation = {
   template: TemplateMutation;
 };
 
-
 export type MutationRunAnonymousJobArgs = {
   job?: Maybe<NewJobInput>;
 };
@@ -81,7 +79,6 @@ export type Subscription = {
   /** Subscribes for updates about job. */
   jobUpdated: JobUpdated;
 };
-
 
 export type SubscriptionJobUpdatedArgs = {
   id: Scalars['ID'];
@@ -98,16 +95,13 @@ export type Me = {
   job?: Maybe<Job>;
 };
 
-
 export type MeSiteArgs = {
   id: Scalars['ID'];
 };
 
-
 export type MeTemplateArgs = {
   id: Scalars['ID'];
 };
-
 
 export type MeJobArgs = {
   id: Scalars['ID'];
@@ -116,7 +110,7 @@ export type MeJobArgs = {
 export enum MutationStatus {
   Ok = 'OK',
   NotFound = 'NOT_FOUND',
-  Conflict = 'CONFLICT'
+  Conflict = 'CONFLICT',
 }
 
 export type MutationResult = {
@@ -186,22 +180,18 @@ export type SiteMutation = {
   runJob: MutationIdResult;
 };
 
-
 export type SiteMutationCreateArgs = {
   site?: Maybe<NewSiteInput>;
 };
-
 
 export type SiteMutationUpdateArgs = {
   id?: Maybe<Scalars['ID']>;
   update?: Maybe<UpdateSiteInput>;
 };
 
-
 export type SiteMutationDeleteArgs = {
   id?: Maybe<Scalars['ID']>;
 };
-
 
 export type SiteMutationRunJobArgs = {
   id?: Maybe<Scalars['ID']>;
@@ -240,378 +230,240 @@ export type TemplateMutation = {
   delete: Template;
 };
 
-
 export type TemplateMutationCreateArgs = {
   template?: Maybe<NewTemplateInput>;
 };
-
 
 export type TemplateMutationUpdateArgs = {
   id?: Maybe<Scalars['ID']>;
   update?: Maybe<UpdateTemplateInput>;
 };
 
-
 export type TemplateMutationDeleteArgs = {
   id?: Maybe<Scalars['ID']>;
 };
 
-export type JobFieldsFragment = (
-  { __typename?: 'Job' }
-  & Pick<Job, 'id' | 'progress' | 'status' | 'zipFileId' | 'errorMessage'>
-  & { items: Array<(
-    { __typename?: 'ProgressItem' }
-    & ProgressItemFieldsFragment
-  )> }
-);
+export type JobFieldsFragment = { __typename?: 'Job' } & Pick<Job, 'id' | 'progress' | 'status' | 'zipFileId' | 'errorMessage'> & {
+    items: Array<{ __typename?: 'ProgressItem' } & ProgressItemFieldsFragment>;
+  };
 
-export type JobUpdatedFieldsFragment = (
-  { __typename?: 'JobUpdated' }
-  & Pick<JobUpdated, 'id' | 'progress' | 'status' | 'zipFileId' | 'errorMessage'>
-  & { item?: Maybe<(
-    { __typename?: 'ProgressItem' }
-    & ProgressItemFieldsFragment
-  )> }
-);
+export type JobUpdatedFieldsFragment = { __typename?: 'JobUpdated' } & Pick<
+  JobUpdated,
+  'id' | 'progress' | 'status' | 'zipFileId' | 'errorMessage'
+> & { item?: Maybe<{ __typename?: 'ProgressItem' } & ProgressItemFieldsFragment> };
 
-export type MutationIdResultFieldsFragment = (
-  { __typename?: 'MutationIdResult' }
-  & Pick<MutationIdResult, 'status' | 'id'>
-);
+export type MutationIdResultFieldsFragment = { __typename?: 'MutationIdResult' } & Pick<MutationIdResult, 'status' | 'id'>;
 
-export type MutationResultFieldsFragment = (
-  { __typename?: 'MutationResult' }
-  & Pick<MutationResult, 'status'>
-);
+export type MutationResultFieldsFragment = { __typename?: 'MutationResult' } & Pick<MutationResult, 'status'>;
 
-export type ProgressItemFieldsFragment = (
-  { __typename?: 'ProgressItem' }
-  & Pick<ProgressItem, 'url' | 'status' | 'errorMessage'>
-);
+export type ProgressItemFieldsFragment = { __typename?: 'ProgressItem' } & Pick<ProgressItem, 'url' | 'status' | 'errorMessage'>;
 
-export type SiteFieldsFragment = (
-  { __typename?: 'Site' }
-  & Pick<Site, 'id' | 'name' | 'url' | 'quality' | 'subsites' | 'latestJobId'>
-  & { viewports: Array<(
-    { __typename?: 'Viewport' }
-    & ViewportFieldsFragment
-  )> }
-);
+export type SiteFieldsFragment = { __typename?: 'Site' } & Pick<Site, 'id' | 'name' | 'url' | 'quality' | 'subsites' | 'latestJobId'> & {
+    viewports: Array<{ __typename?: 'Viewport' } & ViewportFieldsFragment>;
+  };
 
-export type TemplateFieldsFragment = (
-  { __typename?: 'Template' }
-  & Pick<Template, 'id' | 'name' | 'quality'>
-  & { viewports: Array<(
-    { __typename?: 'Viewport' }
-    & ViewportFieldsFragment
-  )> }
-);
+export type TemplateFieldsFragment = { __typename?: 'Template' } & Pick<Template, 'id' | 'name' | 'quality'> & {
+    viewports: Array<{ __typename?: 'Viewport' } & ViewportFieldsFragment>;
+  };
 
-export type ViewportFieldsFragment = (
-  { __typename?: 'Viewport' }
-  & Pick<Viewport, 'width' | 'height'>
-);
+export type ViewportFieldsFragment = { __typename?: 'Viewport' } & Pick<Viewport, 'width' | 'height'>;
 
 export type RunAnonymousJobMutationVariables = Exact<{
   job: NewJobInput;
 }>;
 
-
-export type RunAnonymousJobMutation = (
-  { __typename?: 'Mutation' }
-  & { runAnonymousJob?: Maybe<(
-    { __typename?: 'MutationIdResult' }
-    & MutationIdResultFieldsFragment
-  )> }
-);
+export type RunAnonymousJobMutation = { __typename?: 'Mutation' } & {
+  runAnonymousJob?: Maybe<{ __typename?: 'MutationIdResult' } & MutationIdResultFieldsFragment>;
+};
 
 export type CreateSiteMutationVariables = Exact<{
   site: NewSiteInput;
 }>;
 
-
-export type CreateSiteMutation = (
-  { __typename?: 'Mutation' }
-  & { site: (
-    { __typename?: 'SiteMutation' }
-    & { create: (
-      { __typename?: 'Site' }
-      & SiteFieldsFragment
-    ) }
-  ) }
-);
+export type CreateSiteMutation = { __typename?: 'Mutation' } & {
+  site: { __typename?: 'SiteMutation' } & { create: { __typename?: 'Site' } & SiteFieldsFragment };
+};
 
 export type DeleteSiteMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type DeleteSiteMutation = (
-  { __typename?: 'Mutation' }
-  & { site: (
-    { __typename?: 'SiteMutation' }
-    & { delete: (
-      { __typename?: 'Site' }
-      & SiteFieldsFragment
-    ) }
-  ) }
-);
+export type DeleteSiteMutation = { __typename?: 'Mutation' } & {
+  site: { __typename?: 'SiteMutation' } & { delete: { __typename?: 'Site' } & SiteFieldsFragment };
+};
 
 export type RunSiteJobMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type RunSiteJobMutation = (
-  { __typename?: 'Mutation' }
-  & { site: (
-    { __typename?: 'SiteMutation' }
-    & { runJob: (
-      { __typename?: 'MutationIdResult' }
-      & MutationIdResultFieldsFragment
-    ) }
-  ) }
-);
+export type RunSiteJobMutation = { __typename?: 'Mutation' } & {
+  site: { __typename?: 'SiteMutation' } & { runJob: { __typename?: 'MutationIdResult' } & MutationIdResultFieldsFragment };
+};
 
 export type UpdateSiteMutationVariables = Exact<{
   id: Scalars['ID'];
   update: UpdateSiteInput;
 }>;
 
-
-export type UpdateSiteMutation = (
-  { __typename?: 'Mutation' }
-  & { site: (
-    { __typename?: 'SiteMutation' }
-    & { update: (
-      { __typename?: 'Site' }
-      & SiteFieldsFragment
-    ) }
-  ) }
-);
+export type UpdateSiteMutation = { __typename?: 'Mutation' } & {
+  site: { __typename?: 'SiteMutation' } & { update: { __typename?: 'Site' } & SiteFieldsFragment };
+};
 
 export type CreateTemplateMutationVariables = Exact<{
   template: NewTemplateInput;
 }>;
 
-
-export type CreateTemplateMutation = (
-  { __typename?: 'Mutation' }
-  & { template: (
-    { __typename?: 'TemplateMutation' }
-    & { create: (
-      { __typename?: 'Template' }
-      & TemplateFieldsFragment
-    ) }
-  ) }
-);
+export type CreateTemplateMutation = { __typename?: 'Mutation' } & {
+  template: { __typename?: 'TemplateMutation' } & { create: { __typename?: 'Template' } & TemplateFieldsFragment };
+};
 
 export type DeleteTemplateMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type DeleteTemplateMutation = (
-  { __typename?: 'Mutation' }
-  & { template: (
-    { __typename?: 'TemplateMutation' }
-    & { delete: (
-      { __typename?: 'Template' }
-      & TemplateFieldsFragment
-    ) }
-  ) }
-);
+export type DeleteTemplateMutation = { __typename?: 'Mutation' } & {
+  template: { __typename?: 'TemplateMutation' } & { delete: { __typename?: 'Template' } & TemplateFieldsFragment };
+};
 
 export type UpdateTemplateMutationVariables = Exact<{
   id: Scalars['ID'];
   update: UpdateTemplateInput;
 }>;
 
-
-export type UpdateTemplateMutation = (
-  { __typename?: 'Mutation' }
-  & { template: (
-    { __typename?: 'TemplateMutation' }
-    & { update: (
-      { __typename?: 'Template' }
-      & TemplateFieldsFragment
-    ) }
-  ) }
-);
+export type UpdateTemplateMutation = { __typename?: 'Mutation' } & {
+  template: { __typename?: 'TemplateMutation' } & { update: { __typename?: 'Template' } & TemplateFieldsFragment };
+};
 
 export type AnonymousJobQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
+export type AnonymousJobQuery = { __typename?: 'Query' } & { anonymousJob?: Maybe<{ __typename?: 'Job' } & JobFieldsFragment> };
 
-export type AnonymousJobQuery = (
-  { __typename?: 'Query' }
-  & { anonymousJob?: Maybe<(
-    { __typename?: 'Job' }
-    & JobFieldsFragment
-  )> }
-);
+export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
-export type MeQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MeQuery = (
-  { __typename?: 'Query' }
-  & { me: (
-    { __typename?: 'Me' }
-    & Pick<Me, 'id'>
-    & { templates: Array<(
-      { __typename?: 'Template' }
-      & TemplateFieldsFragment
-    )>, sites: Array<(
-      { __typename?: 'Site' }
-      & SiteFieldsFragment
-    )> }
-  ) }
-);
+export type MeQuery = { __typename?: 'Query' } & {
+  me: { __typename?: 'Me' } & Pick<Me, 'id'> & {
+      templates: Array<{ __typename?: 'Template' } & TemplateFieldsFragment>;
+      sites: Array<{ __typename?: 'Site' } & SiteFieldsFragment>;
+    };
+};
 
 export type JobQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type JobQuery = (
-  { __typename?: 'Query' }
-  & { me: (
-    { __typename?: 'Me' }
-    & Pick<Me, 'id'>
-    & { job?: Maybe<(
-      { __typename?: 'Job' }
-      & JobFieldsFragment
-    )> }
-  ) }
-);
+export type JobQuery = { __typename?: 'Query' } & {
+  me: { __typename?: 'Me' } & Pick<Me, 'id'> & { job?: Maybe<{ __typename?: 'Job' } & JobFieldsFragment> };
+};
 
 export type SiteQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type SiteQuery = (
-  { __typename?: 'Query' }
-  & { me: (
-    { __typename?: 'Me' }
-    & Pick<Me, 'id'>
-    & { site?: Maybe<(
-      { __typename?: 'Site' }
-      & SiteFieldsFragment
-    )> }
-  ) }
-);
+export type SiteQuery = { __typename?: 'Query' } & {
+  me: { __typename?: 'Me' } & Pick<Me, 'id'> & { site?: Maybe<{ __typename?: 'Site' } & SiteFieldsFragment> };
+};
 
 export type TemplateQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type TemplateQuery = (
-  { __typename?: 'Query' }
-  & { me: (
-    { __typename?: 'Me' }
-    & Pick<Me, 'id'>
-    & { template?: Maybe<(
-      { __typename?: 'Template' }
-      & TemplateFieldsFragment
-    )> }
-  ) }
-);
+export type TemplateQuery = { __typename?: 'Query' } & {
+  me: { __typename?: 'Me' } & Pick<Me, 'id'> & { template?: Maybe<{ __typename?: 'Template' } & TemplateFieldsFragment> };
+};
 
 export type JobUpdatedSubscriptionVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type JobUpdatedSubscription = (
-  { __typename?: 'Subscription' }
-  & { jobUpdated: (
-    { __typename?: 'JobUpdated' }
-    & JobUpdatedFieldsFragment
-  ) }
-);
+export type JobUpdatedSubscription = { __typename?: 'Subscription' } & {
+  jobUpdated: { __typename?: 'JobUpdated' } & JobUpdatedFieldsFragment;
+};
 
 export const ProgressItemFieldsFragmentDoc = gql`
-    fragment progressItemFields on ProgressItem {
-  url
-  status
-  errorMessage
-}
-    `;
+  fragment progressItemFields on ProgressItem {
+    url
+    status
+    errorMessage
+  }
+`;
 export const JobFieldsFragmentDoc = gql`
-    fragment jobFields on Job {
-  id
-  progress
-  status
-  zipFileId
-  errorMessage
-  items {
-    ...progressItemFields
+  fragment jobFields on Job {
+    id
+    progress
+    status
+    zipFileId
+    errorMessage
+    items {
+      ...progressItemFields
+    }
   }
-}
-    ${ProgressItemFieldsFragmentDoc}`;
+  ${ProgressItemFieldsFragmentDoc}
+`;
 export const JobUpdatedFieldsFragmentDoc = gql`
-    fragment jobUpdatedFields on JobUpdated {
-  id
-  progress
-  status
-  zipFileId
-  errorMessage
-  item {
-    ...progressItemFields
+  fragment jobUpdatedFields on JobUpdated {
+    id
+    progress
+    status
+    zipFileId
+    errorMessage
+    item {
+      ...progressItemFields
+    }
   }
-}
-    ${ProgressItemFieldsFragmentDoc}`;
+  ${ProgressItemFieldsFragmentDoc}
+`;
 export const MutationIdResultFieldsFragmentDoc = gql`
-    fragment mutationIdResultFields on MutationIdResult {
-  status
-  id
-}
-    `;
+  fragment mutationIdResultFields on MutationIdResult {
+    status
+    id
+  }
+`;
 export const MutationResultFieldsFragmentDoc = gql`
-    fragment mutationResultFields on MutationResult {
-  status
-}
-    `;
+  fragment mutationResultFields on MutationResult {
+    status
+  }
+`;
 export const ViewportFieldsFragmentDoc = gql`
-    fragment viewportFields on Viewport {
-  width
-  height
-}
-    `;
+  fragment viewportFields on Viewport {
+    width
+    height
+  }
+`;
 export const SiteFieldsFragmentDoc = gql`
-    fragment siteFields on Site {
-  id
-  name
-  url
-  quality
-  subsites
-  latestJobId
-  viewports {
-    ...viewportFields
+  fragment siteFields on Site {
+    id
+    name
+    url
+    quality
+    subsites
+    latestJobId
+    viewports {
+      ...viewportFields
+    }
   }
-}
-    ${ViewportFieldsFragmentDoc}`;
+  ${ViewportFieldsFragmentDoc}
+`;
 export const TemplateFieldsFragmentDoc = gql`
-    fragment templateFields on Template {
-  id
-  name
-  quality
-  viewports {
-    ...viewportFields
+  fragment templateFields on Template {
+    id
+    name
+    quality
+    viewports {
+      ...viewportFields
+    }
   }
-}
-    ${ViewportFieldsFragmentDoc}`;
+  ${ViewportFieldsFragmentDoc}
+`;
 export const RunAnonymousJobDocument = gql`
-    mutation runAnonymousJob($job: NewJobInput!) {
-  runAnonymousJob(job: $job) {
-    ...mutationIdResultFields
+  mutation runAnonymousJob($job: NewJobInput!) {
+    runAnonymousJob(job: $job) {
+      ...mutationIdResultFields
+    }
   }
-}
-    ${MutationIdResultFieldsFragmentDoc}`;
+  ${MutationIdResultFieldsFragmentDoc}
+`;
 export type RunAnonymousJobMutationFn = Apollo.MutationFunction<RunAnonymousJobMutation, RunAnonymousJobMutationVariables>;
 
 /**
@@ -631,21 +483,24 @@ export type RunAnonymousJobMutationFn = Apollo.MutationFunction<RunAnonymousJobM
  *   },
  * });
  */
-export function useRunAnonymousJobMutation(baseOptions?: Apollo.MutationHookOptions<RunAnonymousJobMutation, RunAnonymousJobMutationVariables>) {
-        return Apollo.useMutation<RunAnonymousJobMutation, RunAnonymousJobMutationVariables>(RunAnonymousJobDocument, baseOptions);
-      }
+export function useRunAnonymousJobMutation(
+  baseOptions?: Apollo.MutationHookOptions<RunAnonymousJobMutation, RunAnonymousJobMutationVariables>,
+) {
+  return Apollo.useMutation<RunAnonymousJobMutation, RunAnonymousJobMutationVariables>(RunAnonymousJobDocument, baseOptions);
+}
 export type RunAnonymousJobMutationHookResult = ReturnType<typeof useRunAnonymousJobMutation>;
 export type RunAnonymousJobMutationResult = Apollo.MutationResult<RunAnonymousJobMutation>;
 export type RunAnonymousJobMutationOptions = Apollo.BaseMutationOptions<RunAnonymousJobMutation, RunAnonymousJobMutationVariables>;
 export const CreateSiteDocument = gql`
-    mutation createSite($site: NewSiteInput!) {
-  site {
-    create(site: $site) {
-      ...siteFields
+  mutation createSite($site: NewSiteInput!) {
+    site {
+      create(site: $site) {
+        ...siteFields
+      }
     }
   }
-}
-    ${SiteFieldsFragmentDoc}`;
+  ${SiteFieldsFragmentDoc}
+`;
 export type CreateSiteMutationFn = Apollo.MutationFunction<CreateSiteMutation, CreateSiteMutationVariables>;
 
 /**
@@ -666,20 +521,21 @@ export type CreateSiteMutationFn = Apollo.MutationFunction<CreateSiteMutation, C
  * });
  */
 export function useCreateSiteMutation(baseOptions?: Apollo.MutationHookOptions<CreateSiteMutation, CreateSiteMutationVariables>) {
-        return Apollo.useMutation<CreateSiteMutation, CreateSiteMutationVariables>(CreateSiteDocument, baseOptions);
-      }
+  return Apollo.useMutation<CreateSiteMutation, CreateSiteMutationVariables>(CreateSiteDocument, baseOptions);
+}
 export type CreateSiteMutationHookResult = ReturnType<typeof useCreateSiteMutation>;
 export type CreateSiteMutationResult = Apollo.MutationResult<CreateSiteMutation>;
 export type CreateSiteMutationOptions = Apollo.BaseMutationOptions<CreateSiteMutation, CreateSiteMutationVariables>;
 export const DeleteSiteDocument = gql`
-    mutation deleteSite($id: ID!) {
-  site {
-    delete(id: $id) {
-      ...siteFields
+  mutation deleteSite($id: ID!) {
+    site {
+      delete(id: $id) {
+        ...siteFields
+      }
     }
   }
-}
-    ${SiteFieldsFragmentDoc}`;
+  ${SiteFieldsFragmentDoc}
+`;
 export type DeleteSiteMutationFn = Apollo.MutationFunction<DeleteSiteMutation, DeleteSiteMutationVariables>;
 
 /**
@@ -700,20 +556,21 @@ export type DeleteSiteMutationFn = Apollo.MutationFunction<DeleteSiteMutation, D
  * });
  */
 export function useDeleteSiteMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSiteMutation, DeleteSiteMutationVariables>) {
-        return Apollo.useMutation<DeleteSiteMutation, DeleteSiteMutationVariables>(DeleteSiteDocument, baseOptions);
-      }
+  return Apollo.useMutation<DeleteSiteMutation, DeleteSiteMutationVariables>(DeleteSiteDocument, baseOptions);
+}
 export type DeleteSiteMutationHookResult = ReturnType<typeof useDeleteSiteMutation>;
 export type DeleteSiteMutationResult = Apollo.MutationResult<DeleteSiteMutation>;
 export type DeleteSiteMutationOptions = Apollo.BaseMutationOptions<DeleteSiteMutation, DeleteSiteMutationVariables>;
 export const RunSiteJobDocument = gql`
-    mutation runSiteJob($id: ID!) {
-  site {
-    runJob(id: $id) {
-      ...mutationIdResultFields
+  mutation runSiteJob($id: ID!) {
+    site {
+      runJob(id: $id) {
+        ...mutationIdResultFields
+      }
     }
   }
-}
-    ${MutationIdResultFieldsFragmentDoc}`;
+  ${MutationIdResultFieldsFragmentDoc}
+`;
 export type RunSiteJobMutationFn = Apollo.MutationFunction<RunSiteJobMutation, RunSiteJobMutationVariables>;
 
 /**
@@ -734,20 +591,21 @@ export type RunSiteJobMutationFn = Apollo.MutationFunction<RunSiteJobMutation, R
  * });
  */
 export function useRunSiteJobMutation(baseOptions?: Apollo.MutationHookOptions<RunSiteJobMutation, RunSiteJobMutationVariables>) {
-        return Apollo.useMutation<RunSiteJobMutation, RunSiteJobMutationVariables>(RunSiteJobDocument, baseOptions);
-      }
+  return Apollo.useMutation<RunSiteJobMutation, RunSiteJobMutationVariables>(RunSiteJobDocument, baseOptions);
+}
 export type RunSiteJobMutationHookResult = ReturnType<typeof useRunSiteJobMutation>;
 export type RunSiteJobMutationResult = Apollo.MutationResult<RunSiteJobMutation>;
 export type RunSiteJobMutationOptions = Apollo.BaseMutationOptions<RunSiteJobMutation, RunSiteJobMutationVariables>;
 export const UpdateSiteDocument = gql`
-    mutation updateSite($id: ID!, $update: UpdateSiteInput!) {
-  site {
-    update(id: $id, update: $update) {
-      ...siteFields
+  mutation updateSite($id: ID!, $update: UpdateSiteInput!) {
+    site {
+      update(id: $id, update: $update) {
+        ...siteFields
+      }
     }
   }
-}
-    ${SiteFieldsFragmentDoc}`;
+  ${SiteFieldsFragmentDoc}
+`;
 export type UpdateSiteMutationFn = Apollo.MutationFunction<UpdateSiteMutation, UpdateSiteMutationVariables>;
 
 /**
@@ -769,20 +627,21 @@ export type UpdateSiteMutationFn = Apollo.MutationFunction<UpdateSiteMutation, U
  * });
  */
 export function useUpdateSiteMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSiteMutation, UpdateSiteMutationVariables>) {
-        return Apollo.useMutation<UpdateSiteMutation, UpdateSiteMutationVariables>(UpdateSiteDocument, baseOptions);
-      }
+  return Apollo.useMutation<UpdateSiteMutation, UpdateSiteMutationVariables>(UpdateSiteDocument, baseOptions);
+}
 export type UpdateSiteMutationHookResult = ReturnType<typeof useUpdateSiteMutation>;
 export type UpdateSiteMutationResult = Apollo.MutationResult<UpdateSiteMutation>;
 export type UpdateSiteMutationOptions = Apollo.BaseMutationOptions<UpdateSiteMutation, UpdateSiteMutationVariables>;
 export const CreateTemplateDocument = gql`
-    mutation createTemplate($template: NewTemplateInput!) {
-  template {
-    create(template: $template) {
-      ...templateFields
+  mutation createTemplate($template: NewTemplateInput!) {
+    template {
+      create(template: $template) {
+        ...templateFields
+      }
     }
   }
-}
-    ${TemplateFieldsFragmentDoc}`;
+  ${TemplateFieldsFragmentDoc}
+`;
 export type CreateTemplateMutationFn = Apollo.MutationFunction<CreateTemplateMutation, CreateTemplateMutationVariables>;
 
 /**
@@ -802,21 +661,24 @@ export type CreateTemplateMutationFn = Apollo.MutationFunction<CreateTemplateMut
  *   },
  * });
  */
-export function useCreateTemplateMutation(baseOptions?: Apollo.MutationHookOptions<CreateTemplateMutation, CreateTemplateMutationVariables>) {
-        return Apollo.useMutation<CreateTemplateMutation, CreateTemplateMutationVariables>(CreateTemplateDocument, baseOptions);
-      }
+export function useCreateTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateTemplateMutation, CreateTemplateMutationVariables>,
+) {
+  return Apollo.useMutation<CreateTemplateMutation, CreateTemplateMutationVariables>(CreateTemplateDocument, baseOptions);
+}
 export type CreateTemplateMutationHookResult = ReturnType<typeof useCreateTemplateMutation>;
 export type CreateTemplateMutationResult = Apollo.MutationResult<CreateTemplateMutation>;
 export type CreateTemplateMutationOptions = Apollo.BaseMutationOptions<CreateTemplateMutation, CreateTemplateMutationVariables>;
 export const DeleteTemplateDocument = gql`
-    mutation deleteTemplate($id: ID!) {
-  template {
-    delete(id: $id) {
-      ...templateFields
+  mutation deleteTemplate($id: ID!) {
+    template {
+      delete(id: $id) {
+        ...templateFields
+      }
     }
   }
-}
-    ${TemplateFieldsFragmentDoc}`;
+  ${TemplateFieldsFragmentDoc}
+`;
 export type DeleteTemplateMutationFn = Apollo.MutationFunction<DeleteTemplateMutation, DeleteTemplateMutationVariables>;
 
 /**
@@ -836,21 +698,24 @@ export type DeleteTemplateMutationFn = Apollo.MutationFunction<DeleteTemplateMut
  *   },
  * });
  */
-export function useDeleteTemplateMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTemplateMutation, DeleteTemplateMutationVariables>) {
-        return Apollo.useMutation<DeleteTemplateMutation, DeleteTemplateMutationVariables>(DeleteTemplateDocument, baseOptions);
-      }
+export function useDeleteTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteTemplateMutation, DeleteTemplateMutationVariables>,
+) {
+  return Apollo.useMutation<DeleteTemplateMutation, DeleteTemplateMutationVariables>(DeleteTemplateDocument, baseOptions);
+}
 export type DeleteTemplateMutationHookResult = ReturnType<typeof useDeleteTemplateMutation>;
 export type DeleteTemplateMutationResult = Apollo.MutationResult<DeleteTemplateMutation>;
 export type DeleteTemplateMutationOptions = Apollo.BaseMutationOptions<DeleteTemplateMutation, DeleteTemplateMutationVariables>;
 export const UpdateTemplateDocument = gql`
-    mutation updateTemplate($id: ID!, $update: UpdateTemplateInput!) {
-  template {
-    update(id: $id, update: $update) {
-      ...templateFields
+  mutation updateTemplate($id: ID!, $update: UpdateTemplateInput!) {
+    template {
+      update(id: $id, update: $update) {
+        ...templateFields
+      }
     }
   }
-}
-    ${TemplateFieldsFragmentDoc}`;
+  ${TemplateFieldsFragmentDoc}
+`;
 export type UpdateTemplateMutationFn = Apollo.MutationFunction<UpdateTemplateMutation, UpdateTemplateMutationVariables>;
 
 /**
@@ -871,19 +736,22 @@ export type UpdateTemplateMutationFn = Apollo.MutationFunction<UpdateTemplateMut
  *   },
  * });
  */
-export function useUpdateTemplateMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemplateMutation, UpdateTemplateMutationVariables>) {
-        return Apollo.useMutation<UpdateTemplateMutation, UpdateTemplateMutationVariables>(UpdateTemplateDocument, baseOptions);
-      }
+export function useUpdateTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateTemplateMutation, UpdateTemplateMutationVariables>,
+) {
+  return Apollo.useMutation<UpdateTemplateMutation, UpdateTemplateMutationVariables>(UpdateTemplateDocument, baseOptions);
+}
 export type UpdateTemplateMutationHookResult = ReturnType<typeof useUpdateTemplateMutation>;
 export type UpdateTemplateMutationResult = Apollo.MutationResult<UpdateTemplateMutation>;
 export type UpdateTemplateMutationOptions = Apollo.BaseMutationOptions<UpdateTemplateMutation, UpdateTemplateMutationVariables>;
 export const AnonymousJobDocument = gql`
-    query anonymousJob($id: ID!) {
-  anonymousJob(id: $id) {
-    ...jobFields
+  query anonymousJob($id: ID!) {
+    anonymousJob(id: $id) {
+      ...jobFields
+    }
   }
-}
-    ${JobFieldsFragmentDoc}`;
+  ${JobFieldsFragmentDoc}
+`;
 
 /**
  * __useAnonymousJobQuery__
@@ -902,28 +770,29 @@ export const AnonymousJobDocument = gql`
  * });
  */
 export function useAnonymousJobQuery(baseOptions: Apollo.QueryHookOptions<AnonymousJobQuery, AnonymousJobQueryVariables>) {
-        return Apollo.useQuery<AnonymousJobQuery, AnonymousJobQueryVariables>(AnonymousJobDocument, baseOptions);
-      }
+  return Apollo.useQuery<AnonymousJobQuery, AnonymousJobQueryVariables>(AnonymousJobDocument, baseOptions);
+}
 export function useAnonymousJobLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AnonymousJobQuery, AnonymousJobQueryVariables>) {
-          return Apollo.useLazyQuery<AnonymousJobQuery, AnonymousJobQueryVariables>(AnonymousJobDocument, baseOptions);
-        }
+  return Apollo.useLazyQuery<AnonymousJobQuery, AnonymousJobQueryVariables>(AnonymousJobDocument, baseOptions);
+}
 export type AnonymousJobQueryHookResult = ReturnType<typeof useAnonymousJobQuery>;
 export type AnonymousJobLazyQueryHookResult = ReturnType<typeof useAnonymousJobLazyQuery>;
 export type AnonymousJobQueryResult = Apollo.QueryResult<AnonymousJobQuery, AnonymousJobQueryVariables>;
 export const MeDocument = gql`
-    query me {
-  me {
-    id
-    templates {
-      ...templateFields
-    }
-    sites {
-      ...siteFields
+  query me {
+    me {
+      id
+      templates {
+        ...templateFields
+      }
+      sites {
+        ...siteFields
+      }
     }
   }
-}
-    ${TemplateFieldsFragmentDoc}
-${SiteFieldsFragmentDoc}`;
+  ${TemplateFieldsFragmentDoc}
+  ${SiteFieldsFragmentDoc}
+`;
 
 /**
  * __useMeQuery__
@@ -941,24 +810,25 @@ ${SiteFieldsFragmentDoc}`;
  * });
  */
 export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
-        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
-      }
+  return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
+}
 export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
-          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
-        }
+  return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
+}
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const JobDocument = gql`
-    query job($id: ID!) {
-  me {
-    id
-    job(id: $id) {
-      ...jobFields
+  query job($id: ID!) {
+    me {
+      id
+      job(id: $id) {
+        ...jobFields
+      }
     }
   }
-}
-    ${JobFieldsFragmentDoc}`;
+  ${JobFieldsFragmentDoc}
+`;
 
 /**
  * __useJobQuery__
@@ -977,24 +847,25 @@ export const JobDocument = gql`
  * });
  */
 export function useJobQuery(baseOptions: Apollo.QueryHookOptions<JobQuery, JobQueryVariables>) {
-        return Apollo.useQuery<JobQuery, JobQueryVariables>(JobDocument, baseOptions);
-      }
+  return Apollo.useQuery<JobQuery, JobQueryVariables>(JobDocument, baseOptions);
+}
 export function useJobLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<JobQuery, JobQueryVariables>) {
-          return Apollo.useLazyQuery<JobQuery, JobQueryVariables>(JobDocument, baseOptions);
-        }
+  return Apollo.useLazyQuery<JobQuery, JobQueryVariables>(JobDocument, baseOptions);
+}
 export type JobQueryHookResult = ReturnType<typeof useJobQuery>;
 export type JobLazyQueryHookResult = ReturnType<typeof useJobLazyQuery>;
 export type JobQueryResult = Apollo.QueryResult<JobQuery, JobQueryVariables>;
 export const SiteDocument = gql`
-    query site($id: ID!) {
-  me {
-    id
-    site(id: $id) {
-      ...siteFields
+  query site($id: ID!) {
+    me {
+      id
+      site(id: $id) {
+        ...siteFields
+      }
     }
   }
-}
-    ${SiteFieldsFragmentDoc}`;
+  ${SiteFieldsFragmentDoc}
+`;
 
 /**
  * __useSiteQuery__
@@ -1013,24 +884,25 @@ export const SiteDocument = gql`
  * });
  */
 export function useSiteQuery(baseOptions: Apollo.QueryHookOptions<SiteQuery, SiteQueryVariables>) {
-        return Apollo.useQuery<SiteQuery, SiteQueryVariables>(SiteDocument, baseOptions);
-      }
+  return Apollo.useQuery<SiteQuery, SiteQueryVariables>(SiteDocument, baseOptions);
+}
 export function useSiteLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SiteQuery, SiteQueryVariables>) {
-          return Apollo.useLazyQuery<SiteQuery, SiteQueryVariables>(SiteDocument, baseOptions);
-        }
+  return Apollo.useLazyQuery<SiteQuery, SiteQueryVariables>(SiteDocument, baseOptions);
+}
 export type SiteQueryHookResult = ReturnType<typeof useSiteQuery>;
 export type SiteLazyQueryHookResult = ReturnType<typeof useSiteLazyQuery>;
 export type SiteQueryResult = Apollo.QueryResult<SiteQuery, SiteQueryVariables>;
 export const TemplateDocument = gql`
-    query template($id: ID!) {
-  me {
-    id
-    template(id: $id) {
-      ...templateFields
+  query template($id: ID!) {
+    me {
+      id
+      template(id: $id) {
+        ...templateFields
+      }
     }
   }
-}
-    ${TemplateFieldsFragmentDoc}`;
+  ${TemplateFieldsFragmentDoc}
+`;
 
 /**
  * __useTemplateQuery__
@@ -1049,21 +921,22 @@ export const TemplateDocument = gql`
  * });
  */
 export function useTemplateQuery(baseOptions: Apollo.QueryHookOptions<TemplateQuery, TemplateQueryVariables>) {
-        return Apollo.useQuery<TemplateQuery, TemplateQueryVariables>(TemplateDocument, baseOptions);
-      }
+  return Apollo.useQuery<TemplateQuery, TemplateQueryVariables>(TemplateDocument, baseOptions);
+}
 export function useTemplateLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TemplateQuery, TemplateQueryVariables>) {
-          return Apollo.useLazyQuery<TemplateQuery, TemplateQueryVariables>(TemplateDocument, baseOptions);
-        }
+  return Apollo.useLazyQuery<TemplateQuery, TemplateQueryVariables>(TemplateDocument, baseOptions);
+}
 export type TemplateQueryHookResult = ReturnType<typeof useTemplateQuery>;
 export type TemplateLazyQueryHookResult = ReturnType<typeof useTemplateLazyQuery>;
 export type TemplateQueryResult = Apollo.QueryResult<TemplateQuery, TemplateQueryVariables>;
 export const JobUpdatedDocument = gql`
-    subscription jobUpdated($id: ID!) {
-  jobUpdated(id: $id) {
-    ...jobUpdatedFields
+  subscription jobUpdated($id: ID!) {
+    jobUpdated(id: $id) {
+      ...jobUpdatedFields
+    }
   }
-}
-    ${JobUpdatedFieldsFragmentDoc}`;
+  ${JobUpdatedFieldsFragmentDoc}
+`;
 
 /**
  * __useJobUpdatedSubscription__
@@ -1081,8 +954,10 @@ export const JobUpdatedDocument = gql`
  *   },
  * });
  */
-export function useJobUpdatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<JobUpdatedSubscription, JobUpdatedSubscriptionVariables>) {
-        return Apollo.useSubscription<JobUpdatedSubscription, JobUpdatedSubscriptionVariables>(JobUpdatedDocument, baseOptions);
-      }
+export function useJobUpdatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<JobUpdatedSubscription, JobUpdatedSubscriptionVariables>,
+) {
+  return Apollo.useSubscription<JobUpdatedSubscription, JobUpdatedSubscriptionVariables>(JobUpdatedDocument, baseOptions);
+}
 export type JobUpdatedSubscriptionHookResult = ReturnType<typeof useJobUpdatedSubscription>;
 export type JobUpdatedSubscriptionResult = Apollo.SubscriptionResult<JobUpdatedSubscription>;

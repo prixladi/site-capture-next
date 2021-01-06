@@ -6,7 +6,6 @@ type Props = ButtonOptions &
   ButtonHTMLAttributes<unknown> & {
     submit?: boolean;
     children: React.ReactNode;
-    center?: boolean;
   };
 
 const SubmitButton: React.FC<Props> = ({ children, submit, ...rest }: Props) => (

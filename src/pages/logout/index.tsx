@@ -11,7 +11,7 @@ const Logout: React.FC = () => {
 
   useEffect(() => {
     signOut(manager, router, apollo);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;

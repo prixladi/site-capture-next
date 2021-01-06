@@ -86,7 +86,7 @@ const createApolloClient = (getBearerToken: () => string | null): Apollo => {
     ssrMode: isServer, // set to true for SSR
     uri: config.url,
     link: splitLink,
-    cache: new InMemoryCache({ typePolicies: typePolicies }),
+    cache: new InMemoryCache({ typePolicies }),
   });
 
   return {

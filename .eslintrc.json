@@ -23,7 +23,8 @@
     ],
     "rules": {
         "curly": 1,
-        "quotes": [1, "single", { "avoidEscape": true }]
+        "quotes": [1, "single", { "avoidEscape": true }],
+        "react/display-name": 1
     },
     "overrides": [
       {

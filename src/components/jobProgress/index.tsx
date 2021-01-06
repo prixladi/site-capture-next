@@ -61,7 +61,7 @@ const AnonymousJobProgress: React.FC<AnonymousProps> = ({ jobId, setLoading, onN
     if (!!data && !data.anonymousJob) {
       onNotFound();
       setLoading(false);
-      console.error(`Anonymous job with id ${jobId} was not found.`); 
+      console.error(`Anonymous job with id ${jobId} was not found.`);
     }
   }, [data, setLoading, jobId, onNotFound]);
 

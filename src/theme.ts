@@ -15,7 +15,7 @@ const theme = extendTheme({
     initialColorMode: 'dark',
   },
   fonts,
-  breakpoints
+  breakpoints,
 });
 
 export default theme;
