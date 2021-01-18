@@ -25,7 +25,6 @@ type Props = {
   loading: boolean;
   onSubmitUpdate: (values: Values) => Promise<unknown>;
   onSubmitCapture: () => Promise<unknown>;
-  setJobId: (value: string) => void;
 };
 
 const defaultValues: Values = {
@@ -36,12 +35,12 @@ const defaultValues: Values = {
   subsites: [],
 };
 
-const SiteForm: React.FC<Props> = ({ capturing, site, loading, setJobId, onSubmitUpdate, onSubmitCapture }: Props) => {
+const SiteForm: React.FC<Props> = ({ capturing, site, loading, onSubmitUpdate, onSubmitCapture }: Props) => {
   const isCompact = useCompactLayout();
   const { handleSubmit, register, control, errors, formState, setValue } = useForm<Values>({ defaultValues });
 
   useEffect(() => {
-    const { name, url, quality, subsites, viewports, latestJobId } = site;
+    const { name, url, quality, subsites, viewports } = site;
 
     setValue('name', name);
     setValue('url', url);
@@ -51,10 +50,6 @@ const SiteForm: React.FC<Props> = ({ capturing, site, loading, setJobId, onSubmi
       subsites.map((s) => ({ value: s })),
     );
     setValue('viewports', viewports);
-
-    if (latestJobId) {
-      setJobId(latestJobId);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -63,7 +58,7 @@ const SiteForm: React.FC<Props> = ({ capturing, site, loading, setJobId, onSubmi
       <Grid gridGap="1em">
         <NameInput errorMessage={errors.name?.message} register={register} />
         <UrlInput errorMessage={errors.url?.message} register={register} />
-        <QualitySlider defaultQuality={site.quality} register={register} />
+        <QualitySlider forcedQuality={{ value: site.quality }} register={register} />
         <SubsitesInput errors={errors.subsites} register={register} control={control} />
         <ViewportInputs errors={errors.viewports} register={register} control={control} />
         <Flex display={isCompact ? 'grid' : 'flex'} justifyContent="center" gridGap="1.5em">

@@ -103,7 +103,7 @@ const Template: React.FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid gridGap="1em">
           <NameInput errorMessage={errors.name?.message} register={register} />
-          <QualitySlider defaultQuality={data.me.template.quality} register={register} />
+          <QualitySlider forcedQuality={{ value: data.me.template.quality }} register={register} />
           <ViewportInputs errors={errors.viewports} register={register} control={control} />
           <Button submit isLoading={formState.isSubmitting || loading}>
             <Icon mr="0.2em" as={FaEdit} />

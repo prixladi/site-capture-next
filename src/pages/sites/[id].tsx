@@ -14,6 +14,8 @@ import useCompactLayout from '../../hooks/useCompactLayout';
 import DeleteSiteButton from '../../components/sitePage/DeleteSiteButton';
 import ExtractTemplateButton from '../../components/sitePage/ExtractTemplateButton';
 import SiteForm, { Values } from '../../components/sitePage/SiteForm';
+import { siteOnRunJobUpdate } from '../../services/mutationService';
+import { useAuthorityManager } from '../../authority';
 
 const Site: React.FC = () => {
   const [updateSite] = useUpdateSiteMutation();
@@ -23,10 +25,10 @@ const Site: React.FC = () => {
   const [id, invalid] = useRouteId();
   const [notFound, setNotFound] = useState(false);
   const [capturing, setCapturing] = useState(false);
-  const [jobId, setJobId] = useState(null as string | null);
-  const { handleGqlError } = useApolloErrorHandling(error);
-  const isCompact = useCompactLayout();
   const [deleted, setDeleted] = useState(false);
+  const { handleGqlError } = useApolloErrorHandling(error);
+  const manager = useAuthorityManager();
+  const isCompact = useCompactLayout();
 
   useEffect(() => {
     if (id) {
@@ -69,19 +71,22 @@ const Site: React.FC = () => {
   };
 
   const onSubmitCapture = async () => {
-    const { data, errors } = await runSiteJob({ variables: { id: id as string } });
-    if (!data) {
+    const siteId = id as string;
+    const { data: runData, errors } = await runSiteJob({
+      variables: { id: siteId },
+      update: siteOnRunJobUpdate(siteId, manager.getUserProfile()?.id),
+    });
+    if (!runData) {
       handleGqlError(errors);
       return;
     }
 
-    if (!data.site.runJob.id) {
-      console.error(`Error '${data.site.runJob.status}' while trying to run anonymouse job`);
+    if (!runData.site.runJob.id) {
+      console.error(`Error '${runData.site.runJob.status}' while trying to run anonymouse job`);
       return;
     }
 
     window.scrollTo(0, document.body.scrollHeight);
-    setJobId(data.site.runJob.id);
   };
 
   return (
@@ -104,9 +109,8 @@ const Site: React.FC = () => {
         loading={loading}
         onSubmitUpdate={onSubmitUpdate}
         onSubmitCapture={onSubmitCapture}
-        setJobId={setJobId}
       />
-      {jobId && <JobProgress jobId={jobId} setLoading={setCapturing} />}
+      {data.me.site.latestJobId && <JobProgress jobId={data.me.site.latestJobId} setLoading={setCapturing} />}
     </WideContent>
   );
 };

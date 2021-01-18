@@ -6,6 +6,7 @@ import {
   DeleteTemplateMutation,
   MeDocument,
   MeQuery,
+  RunSiteJobMutation,
   SiteDocument,
   SiteQuery,
   TemplateDocument,
@@ -83,6 +84,33 @@ const siteOnDeleteUpdate = (userId?: string): MutationUpdaterFn<DeleteSiteMutati
   }
 };
 
+const siteOnRunJobUpdate = (siteId: string, userId?: string): MutationUpdaterFn<RunSiteJobMutation> => (cache, result) => {
+  if (result.data && userId) {
+    const oldDetail = cache.readQuery<SiteQuery>({ query: SiteDocument, variables: { id: siteId } });
+    if (oldDetail && oldDetail.me.site) {
+      const newSite = { 
+        ...oldDetail.me.site,
+        latestJobId: result.data.site.runJob.id
+      }
+
+      const newDetail: SiteQuery = {
+        __typename: 'Query',
+        me: {
+          id: userId,
+          __typename: 'Me',
+          site: newSite,
+        },
+      };
+
+      cache.writeQuery<SiteQuery>({
+        query: SiteDocument,
+        variables: { id: siteId },
+        data: newDetail,
+      });
+    }
+  }
+};
+
 const templateOnCreateUpdate = (userId?: string): MutationUpdaterFn<CreateTemplateMutation> => (cache, result) => {
   if (result.data) {
     const oldMe = cache.readQuery<MeQuery>({ query: MeDocument });
@@ -154,4 +182,4 @@ const templateOnDeleteUpdate = (userId?: string): MutationUpdaterFn<DeleteTempla
   }
 };
 
-export { siteOnCreateUpdate, templateOnCreateUpdate, siteOnDeleteUpdate, templateOnDeleteUpdate };
+export { siteOnCreateUpdate, templateOnCreateUpdate, siteOnDeleteUpdate, templateOnDeleteUpdate, siteOnRunJobUpdate };

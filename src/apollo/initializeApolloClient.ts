@@ -1,15 +1,11 @@
 import { NormalizedCacheObject } from '@apollo/client';
 import { Manager } from '../authority';
 import { isServer } from '../configs';
-import createApolloClient, { Apollo, defaultServerClient } from './createApolloClient';
+import createApolloClient, { Apollo } from './createApolloClient';
 
 let client: Apollo | undefined;
 
 const initializeApolloClient = (authorityManager: Manager, initialState?: NormalizedCacheObject): Apollo => {
-  if (isServer) {
-    return defaultServerClient;
-  }
-
   const _client =
     client ??
     createApolloClient(() => {
@@ -28,10 +24,16 @@ const initializeApolloClient = (authorityManager: Manager, initialState?: Normal
     _client.apolloClient.cache.restore({ ...existingCache, ...initialState });
   }
 
+  // For SSG and SSR always create a new Apollo Client
+  if (isServer) {
+    return _client;
+  }
+
   // Create the Apollo Client once in the client
   if (!client) {
     client = _client;
   }
+  
   return _client;
 };
 

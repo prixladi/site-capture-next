@@ -14,44 +14,14 @@ type Apollo = {
   subscriptionClient: SubscriptionClient;
 };
 
-// Stub client for server SSG
-// If you want to use client on sever always initialize new instance with createApoloClient
-const defaultServerClient = {
-  apolloClient: new ApolloClient({
-    ssrMode: true,
-    uri: '/graphql',
-    cache: new InMemoryCache(),
-  }),
-  subscriptionClient: new SubscriptionClient('/graphql', { lazy: true }, ws),
-};
-
-const createApolloClient = (getBearerToken: () => string | null): Apollo => {
-  const config = getGraphqlConfig();
-  if (!config.url) {
-    throw new Error('Graphql endpoint url was not specified in config.');
+const createWsLink = (getBearerToken: () => string | null, url?: string) => {
+  if (!isServer && !url) {
+    throw new Error('Websocket endpoint url was not specified in config.');
   }
 
-  const authLink = setContext((_, { headers }) => {
-    const token = getBearerToken();
-
-    if (token) {
-      return {
-        headers: {
-          ...headers,
-          Authorization: `Bearer ${token}`,
-        },
-      };
-    }
-
-    return { headers: {} };
-  });
-
-  const httpLink = new HttpLink({
-    uri: config.url,
-  });
-
   const subscriptionClient = new SubscriptionClient(
-    config.wsUrl,
+    // Default url to be used with SSG
+    url || '/graphql',
     {
       reconnect: true,
       lazy: true,
@@ -73,13 +43,52 @@ const createApolloClient = (getBearerToken: () => string | null): Apollo => {
 
   const wsLink = new WebSocketLink(subscriptionClient);
 
+  return { subscriptionClient, wsLink };
+};
+
+const createHttpLink = (getBearerToken: () => string | null, url?: string) => {
+  if (!isServer && !url) {
+    throw new Error('Graphql endpoint url was not specified in config.');
+  }
+
+  const authLink = setContext((_, { headers }) => {
+    const token = getBearerToken();
+
+    if (token) {
+      return {
+        headers: {
+          ...headers,
+          Authorization: `Bearer ${token}`,
+        },
+      };
+    }
+
+    return { headers: {} };
+  });
+
+  const httpLink = authLink.concat(
+    // Default url to be used with SSG
+    new HttpLink({
+      uri: url || '/graphql',
+    }),
+  );
+
+  return httpLink;
+};
+
+const createApolloClient = (getBearerToken: () => string | null): Apollo => {
+  const config = getGraphqlConfig();
+
+  const httpLink = createHttpLink(getBearerToken, config.url)
+  const { wsLink, subscriptionClient } = createWsLink(getBearerToken, config.wsUrl);
+
   const splitLink = split(
     ({ query }) => {
       const definition = getMainDefinition(query);
       return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
     },
     wsLink,
-    authLink.concat(httpLink),
+    httpLink,
   );
 
   const apolloClient = new ApolloClient({
@@ -96,5 +105,4 @@ const createApolloClient = (getBearerToken: () => string | null): Apollo => {
 };
 
 export type { Apollo };
-export { defaultServerClient };
 export default createApolloClient;

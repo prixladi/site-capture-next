@@ -28,10 +28,10 @@ const DeleteSiteButton: React.FC<Props> = ({ siteId, setDeleted }: Props) => {
   const [deleteSite, { error }] = useDeleteSiteMutation();
 
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const { handleGqlError } = useApolloErrorHandling(error);
   const router = useRouter();
   const manager = useAuthorityManager();
-  const { handleGqlError } = useApolloErrorHandling(error);
-  const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
   const cancelRef = useRef<HTMLButtonElement | null>(null);
 
